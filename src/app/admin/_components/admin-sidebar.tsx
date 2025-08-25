@@ -11,7 +11,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Building2, Home, Package, Award, Newspaper, LogOut } from 'lucide-react';
+import { Building2, Home, Package, Award, Newspaper, LogOut, GalleryHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -20,6 +20,7 @@ export default function AdminSidebar() {
 
     const navItems = [
         { href: '/admin/dashboard', icon: Home, label: 'Dasbor' },
+        { href: '/admin/dashboard/carousel', icon: GalleryHorizontal, label: 'Carousel' },
         { href: '/admin/dashboard/products', icon: Package, label: 'Produk' },
         { href: '/admin/dashboard/awards', icon: Award, label: 'Penghargaan' },
         { href: '/admin/dashboard/news', icon: Newspaper, label: 'Berita' },
