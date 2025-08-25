@@ -5,14 +5,30 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Building2 } from 'lucide-react';
+import { Menu, Building2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
 
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'Tentang Kami', href: '#tentang-kami' },
   { name: 'Publikasi', href: '#berita' },
-  { name: 'Produk', href: '#produk' },
+  { 
+    name: 'Produk', 
+    href: '#produk',
+    submenu: [
+        { name: 'Tabungan', href: '/produk/tabungan' },
+        { name: 'Deposito', href: '/produk/deposito' },
+        { name: 'Pinjaman', href: '/produk/pinjaman' },
+    ]
+  },
   { name: 'Penghargaan', href: '#penghargaan' },
   { name: 'Kontak', href: '#kontak' },
 ];
@@ -50,13 +66,31 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-md font-medium text-foreground/80 transition-colors hover:text-primary"
-            >
-              {item.name}
-            </Link>
+            item.submenu ? (
+              <DropdownMenu key={item.name}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-md font-medium text-foreground/80 transition-colors hover:text-primary hover:bg-transparent p-0">
+                    {item.name}
+                    <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200 group-data-[state=open]:rotate-180" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {item.submenu.map((subItem) => (
+                    <DropdownMenuItem key={subItem.name} asChild>
+                      <Link href={subItem.href}>{subItem.name}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-md font-medium text-foreground/80 transition-colors hover:text-primary"
+              >
+                {item.name}
+              </Link>
+            )
           ))}
         </nav>
 
@@ -76,17 +110,41 @@ export default function Header() {
                         Binarta Luhur
                     </span>
                 </Link>
-                <nav className="flex flex-col gap-6">
-                  {navItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={closeMobileMenu}
-                      className="text-xl font-medium text-foreground transition-colors hover:text-primary"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                <nav className="flex flex-col gap-2">
+                  <Accordion type="single" collapsible className="w-full">
+                    {navItems.map((item) => (
+                      item.submenu ? (
+                        <AccordionItem value={item.name} key={item.name} className="border-b-0">
+                          <AccordionTrigger className="text-xl font-medium text-foreground transition-colors hover:text-primary hover:no-underline py-3">
+                            {item.name}
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-2">
+                            <div className="flex flex-col gap-2 pl-4 border-l ml-2">
+                              {item.submenu.map((subItem) => (
+                                <Link
+                                  key={subItem.name}
+                                  href={subItem.href}
+                                  onClick={closeMobileMenu}
+                                  className="text-lg font-medium text-foreground/80 transition-colors hover:text-primary"
+                                >
+                                  {subItem.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ) : (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={closeMobileMenu}
+                          className="block text-xl font-medium text-foreground transition-colors hover:text-primary py-3"
+                        >
+                          {item.name}
+                        </Link>
+                      )
+                    ))}
+                  </Accordion>
                 </nav>
               </div>
             </SheetContent>
