@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Upload } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Upload, Loader2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +30,10 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
+import { useToast } from "@/hooks/use-toast";
 
 interface CarouselItem {
   src: string;
@@ -58,21 +62,55 @@ const initialCarouselItems: CarouselItem[] = [
 export default function CarouselAdmin() {
   const [carouselItems, setCarouselItems] = useState(initialCarouselItems);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
   const [editedItem, setEditedItem] = useState<CarouselItem | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const { toast } = useToast();
 
   const handleEditClick = (item: CarouselItem) => {
     setSelectedItem(item);
     setEditedItem({ ...item });
+    setImageFile(null);
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveChanges = () => {
-    if (editedItem && selectedItem) {
-      setCarouselItems(items => items.map(item => item.alt === selectedItem.alt ? editedItem : item));
+  const handleSaveChanges = async () => {
+    if (!editedItem || !selectedItem) return;
+
+    setIsUploading(true);
+
+    try {
+      let imageUrl = editedItem.src;
+
+      if (imageFile) {
+        const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
+        const snapshot = await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      const finalItem = { ...editedItem, src: imageUrl };
+
+      setCarouselItems(items => items.map(item => item.alt === selectedItem.alt ? finalItem : item));
+      
+      toast({
+        title: "Sukses!",
+        description: "Item carousel berhasil diperbarui.",
+      });
+
+      setIsEditDialogOpen(false);
+      setSelectedItem(null);
+
+    } catch (error) {
+        console.error("Error saving changes: ", error);
+        toast({
+            variant: "destructive",
+            title: "Gagal!",
+            description: "Terjadi kesalahan saat menyimpan perubahan.",
+        });
+    } finally {
+        setIsUploading(false);
     }
-    setIsEditDialogOpen(false);
-    setSelectedItem(null);
   };
 
   const handleAltTextChange = (value: string) => {
@@ -84,6 +122,7 @@ export default function CarouselAdmin() {
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && editedItem) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onload = (loadEvent) => {
         const result = loadEvent.target?.result;
@@ -129,6 +168,7 @@ export default function CarouselAdmin() {
                     width={120}
                     height={67.5}
                     className="rounded-md object-cover aspect-video"
+                    unoptimized // Required for external URLs like Firebase Storage
                   />
                 </TableCell>
                 <TableCell className="font-medium">{item.alt}</TableCell>
@@ -176,6 +216,7 @@ export default function CarouselAdmin() {
                     width={400}
                     height={225}
                     className="rounded-md object-cover aspect-video border"
+                    unoptimized
                   />
               </div>
               <div className="space-y-2">
@@ -199,8 +240,11 @@ export default function CarouselAdmin() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Batal</Button>
-            <Button onClick={handleSaveChanges}>Simpan Perubahan</Button>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isUploading}>Batal</Button>
+            <Button onClick={handleSaveChanges} disabled={isUploading}>
+              {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Simpan Perubahan
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
