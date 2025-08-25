@@ -65,7 +65,7 @@ export default function Hero() {
         </CarouselContent>
       </Carousel>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 pt-24">
         <div className="bg-black/20 backdrop-blur-sm p-8 rounded-lg">
           <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter drop-shadow-lg">
             Inovasi Membangun Masa Depan

@@ -57,7 +57,7 @@ export default function Header() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        isScrolled ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
+        isScrolled ? 'bg-transparent' : 'bg-accent shadow-md'
       )}
     >
       <div className="container mx-auto px-4 md:px-6">
@@ -70,8 +70,8 @@ export default function Header() {
         </div>
         <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-            <Building2 className={cn("h-8 w-8 text-primary transition-colors", isScrolled || "text-white")} />
-            <span className={cn("text-2xl font-bold font-headline text-foreground transition-colors", isScrolled || "text-white")}>
+            <Building2 className={cn("h-8 w-8 text-white transition-colors")} />
+            <span className={cn("text-2xl font-bold font-headline text-white transition-colors")}>
                 Binarta Luhur
             </span>
             </Link>
@@ -81,7 +81,7 @@ export default function Header() {
                 item.submenu ? (
                 <DropdownMenu key={item.name}>
                     <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className={cn("text-md font-medium text-foreground/80 transition-colors hover:text-primary hover:bg-transparent p-0", isScrolled || "text-white/90 hover:text-white")}>
+                    <Button variant="ghost" className={cn("text-md font-medium text-white/90 transition-colors hover:text-white hover:bg-transparent p-0")}>
                         {item.name}
                         <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200 group-data-[state=open]:rotate-180" />
                     </Button>
@@ -98,7 +98,7 @@ export default function Header() {
                 <Link
                     key={item.name}
                     href={item.href}
-                    className={cn("text-md font-medium text-foreground/80 transition-colors hover:text-primary", isScrolled || "text-white/90 hover:text-white")}
+                    className={cn("text-md font-medium text-white/90 transition-colors hover:text-white")}
                 >
                     {item.name}
                 </Link>
@@ -109,7 +109,7 @@ export default function Header() {
             <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className={cn(isScrolled || "text-white hover:bg-white/10 hover:text-white")}>
+                <Button variant="ghost" size="icon" className={cn("text-white hover:bg-white/10 hover:text-white")}>
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Buka menu</span>
                 </Button>
