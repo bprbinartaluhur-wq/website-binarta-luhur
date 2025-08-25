@@ -61,14 +61,14 @@ export default function Header() {
       )}
     >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="hidden md:flex justify-end items-center h-10 border-b border-white/20">
+        <div className="hidden md:flex justify-end items-center h-8 border-b border-white/20">
             <div className="flex items-center gap-4">
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><TikTokIcon className="h-4 w-4" /></a>
             </div>
         </div>
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
             <Building2 className={cn("h-8 w-8 text-primary transition-colors", isScrolled || "text-white")} />
             <span className={cn("text-2xl font-bold font-headline text-foreground transition-colors", isScrolled || "text-white")}>
