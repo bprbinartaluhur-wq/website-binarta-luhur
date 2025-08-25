@@ -1,4 +1,7 @@
+'use client';
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -17,8 +20,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
-const carouselItems = [
+interface CarouselItem {
+  src: string;
+  alt: string;
+  status: "Published" | "Draft";
+}
+
+const initialCarouselItems: CarouselItem[] = [
   {
     src: "https://placehold.co/1600x900.png",
     alt: "Produk Inovatif 1",
@@ -37,6 +57,33 @@ const carouselItems = [
 ];
 
 export default function CarouselAdmin() {
+  const [carouselItems, setCarouselItems] = useState(initialCarouselItems);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
+  const [editedItem, setEditedItem] = useState<CarouselItem | null>(null);
+
+  const handleEditClick = (item: CarouselItem) => {
+    setSelectedItem(item);
+    setEditedItem({ ...item });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveChanges = () => {
+    if (editedItem && selectedItem) {
+      // In a real app, you'd send this to your backend.
+      // For now, we just update the local state.
+      setCarouselItems(items => items.map(item => item.alt === selectedItem.alt ? editedItem : item));
+    }
+    setIsEditDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+  const handleFieldChange = (field: keyof CarouselItem, value: string) => {
+    if (editedItem) {
+      setEditedItem({ ...editedItem, [field]: value });
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -88,7 +135,7 @@ export default function CarouselAdmin() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                      <DropdownMenuItem>Ubah</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => handleEditClick(item)}>Ubah</DropdownMenuItem>
                       <DropdownMenuItem>Hapus</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -98,6 +145,43 @@ export default function CarouselAdmin() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Ubah Item Carousel</DialogTitle>
+            <DialogDescription>
+              Lakukan perubahan pada item carousel Anda di sini. Klik simpan jika sudah selesai.
+            </DialogDescription>
+          </DialogHeader>
+          {editedItem && (
+            <div className="grid gap-4 py-4">
+               <div className="space-y-2">
+                <Label>Pratinjau Gambar</Label>
+                <Image
+                    src={editedItem.src}
+                    alt={editedItem.alt}
+                    width={400}
+                    height={225}
+                    className="rounded-md object-cover aspect-video border"
+                  />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="src">URL Gambar</Label>
+                <Input id="src" value={editedItem.src} onChange={(e) => handleFieldChange('src', e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="alt">Alt Text</Label>
+                <Input id="alt" value={editedItem.alt} onChange={(e) => handleFieldChange('alt', e.target.value)} />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Batal</Button>
+            <Button onClick={handleSaveChanges}>Simpan Perubahan</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
