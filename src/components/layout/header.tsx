@@ -9,9 +9,11 @@ import { Menu, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Tentang Kami', href: '#tentang-kami' },
+  { name: 'Publikasi', href: '#berita' },
   { name: 'Produk', href: '#produk' },
   { name: 'Penghargaan', href: '#penghargaan' },
-  { name: 'Berita', href: '#berita' },
   { name: 'Kontak', href: '#kontak' },
 ];
 
