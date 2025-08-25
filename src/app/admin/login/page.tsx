@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Building2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,9 +29,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-secondary">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <div className="mx-auto flex items-center gap-2 mb-4">
-            <Building2 className="h-10 w-10 text-primary" />
-            <h1 className="text-3xl font-bold font-headline">Binarta Luhur</h1>
+          <div className="mx-auto mb-4">
+            <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
           </div>
           <CardTitle className="text-2xl font-headline">Admin Login</CardTitle>
           <CardDescription>Masuk untuk mengelola konten website.</CardDescription>

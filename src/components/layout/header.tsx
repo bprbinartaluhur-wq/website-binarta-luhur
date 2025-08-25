@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Building2, ChevronDown, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Menu, ChevronDown, Facebook, Instagram } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Image from 'next/image';
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -70,10 +71,7 @@ export default function Header() {
         </div>
         <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-            <Building2 className={cn("h-8 w-8 text-white transition-colors")} />
-            <span className={cn("text-2xl font-bold font-headline text-white transition-colors")}>
-                Binarta Luhur
-            </span>
+                <Image src="/logo.png" alt="Binarta Luhur" width={140} height={35} data-ai-hint="company logo" />
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -117,10 +115,7 @@ export default function Header() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
                 <div className="p-6">
                     <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
-                        <Building2 className="h-8 w-8 text-primary" />
-                        <span className="text-2xl font-bold font-headline text-foreground">
-                            Binarta Luhur
-                        </span>
+                        <Image src="/logo.png" alt="Binarta Luhur" width={150} height={40} data-ai-hint="company logo" />
                     </Link>
                     <nav className="flex flex-col gap-2">
                     <Accordion type="single" collapsible className="w-full">

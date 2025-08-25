@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   SidebarHeader,
@@ -11,7 +12,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Building2, Home, Package, Award, Newspaper, LogOut, GalleryHorizontal } from 'lucide-react';
+import { Home, Package, Award, Newspaper, LogOut, GalleryHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -30,7 +31,7 @@ export default function AdminSidebar() {
         <>
             <SidebarHeader>
                  <div className="flex items-center gap-2">
-                    <Building2 className="h-7 w-7 text-primary" />
+                    <Image src="/logo.png" alt="Admin Logo" width={32} height={32} className="rounded-lg" data-ai-hint="company logo" />
                     <span className="text-xl font-bold font-headline text-foreground">
                         Admin
                     </span>
