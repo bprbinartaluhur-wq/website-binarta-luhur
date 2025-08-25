@@ -57,7 +57,7 @@ export default function Header() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        isScrolled ? 'bg-transparent' : 'bg-accent shadow-md'
+        isScrolled ? 'bg-transparent backdrop-blur-md' : 'bg-accent'
       )}
     >
       <div className="container mx-auto px-4 md:px-6">
