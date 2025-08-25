@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Upload } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -70,19 +69,32 @@ export default function CarouselAdmin() {
 
   const handleSaveChanges = () => {
     if (editedItem && selectedItem) {
-      // In a real app, you'd send this to your backend.
-      // For now, we just update the local state.
       setCarouselItems(items => items.map(item => item.alt === selectedItem.alt ? editedItem : item));
     }
     setIsEditDialogOpen(false);
     setSelectedItem(null);
   };
 
-  const handleFieldChange = (field: keyof CarouselItem, value: string) => {
+  const handleAltTextChange = (value: string) => {
     if (editedItem) {
-      setEditedItem({ ...editedItem, [field]: value });
+      setEditedItem({ ...editedItem, alt: value });
     }
   };
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && editedItem) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const result = loadEvent.target?.result;
+        if (typeof result === 'string') {
+          setEditedItem({ ...editedItem, src: result });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   return (
     <div>
@@ -167,12 +179,22 @@ export default function CarouselAdmin() {
                   />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="src">URL Gambar</Label>
-                <Input id="src" value={editedItem.src} onChange={(e) => handleFieldChange('src', e.target.value)} />
+                <Label htmlFor="image-upload">Unggah Gambar Baru</Label>
+                <div className="flex items-center gap-2">
+                    <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} className="sr-only" />
+                    <Label htmlFor="image-upload" className="flex-grow">
+                        <Button asChild variant="outline" className="w-full">
+                            <span>
+                                <Upload className="mr-2 h-4 w-4" />
+                                Pilih File
+                            </span>
+                        </Button>
+                    </Label>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="alt">Alt Text</Label>
-                <Input id="alt" value={editedItem.alt} onChange={(e) => handleFieldChange('alt', e.target.value)} />
+                <Input id="alt" value={editedItem.alt} onChange={(e) => handleAltTextChange(e.target.value)} />
               </div>
             </div>
           )}
