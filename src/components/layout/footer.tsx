@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Building2 } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer id="kontak" className="bg-secondary text-secondary-foreground pt-16 pb-8">
+    <footer id="kontak" className="bg-accent text-accent-foreground pt-16 pb-8">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-1">
@@ -12,7 +12,7 @@ export default function Footer() {
               <Building2 className="h-10 w-10 text-primary" />
               <h3 className="text-3xl font-bold font-headline">Binarta Luhur</h3>
             </div>
-            <p className="text-secondary-foreground/70">
+            <p className="text-accent-foreground/70">
               Menghadirkan inovasi dan kualitas terbaik untuk masa depan yang lebih cerah. Kami berkomitmen pada keunggulan dan kepuasan pelanggan.
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-border pt-6 text-center text-sm text-secondary-foreground/60">
+        <div className="mt-12 border-t border-border pt-6 text-center text-sm text-accent-foreground/60">
           <p>&copy; {new Date().getFullYear()} Binarta Luhur. Semua Hak Cipta Dilindungi Undang-Undang.</p>
         </div>
       </div>
