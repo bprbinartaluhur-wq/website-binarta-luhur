@@ -92,19 +92,18 @@ export default function CarouselAdmin() {
     let imageUrl = editedItem.src;
   
     try {
-      // Jika ada file gambar baru yang dipilih untuk diunggah
       if (imageFile) {
-        // Hapus gambar lama terlebih dahulu
-        if (selectedItem.src) {
+        // Hanya hapus gambar lama jika itu adalah URL Firebase Storage
+        const isFirebaseStorageUrl = selectedItem.src && selectedItem.src.includes('firebasestorage.googleapis.com');
+        if (isFirebaseStorageUrl) {
           try {
             const oldImageRef = ref(storage, selectedItem.src);
             await deleteObject(oldImageRef);
           } catch (deleteError: any) {
-            // Jika file lama tidak ditemukan, abaikan error dan lanjutkan
             if (deleteError.code !== 'storage/object-not-found') {
-               throw deleteError; // Lemparkan error lain selain "tidak ditemukan"
+              throw deleteError;
             }
-            console.warn("Old image not found, skipping deletion:", selectedItem.src);
+            console.warn("Old image not found in Storage, skipping deletion:", selectedItem.src);
           }
         }
   
@@ -130,17 +129,14 @@ export default function CarouselAdmin() {
         });
       }
   
-      // Siapkan data untuk diperbarui di Firestore
       const updatedData = {
         alt: editedItem.alt,
         src: imageUrl,
       };
   
-      // Perbarui dokumen di Firestore
       const itemDocRef = doc(firestore, "carousel", selectedItem.id);
       await updateDoc(itemDocRef, updatedData);
   
-      // Perbarui state lokal untuk menampilkan perubahan di UI
       const finalItem = { ...selectedItem, ...updatedData };
       setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
   
@@ -157,7 +153,6 @@ export default function CarouselAdmin() {
         description: "Terjadi kesalahan saat menyimpan perubahan.",
       });
     } finally {
-      // Reset state setelah selesai
       setIsUploading(false);
       setIsEditDialogOpen(false);
       setUploadProgress(0);
