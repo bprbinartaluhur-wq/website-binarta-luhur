@@ -127,7 +127,7 @@ export default function CarouselAdmin() {
                         await deleteObject(oldImageRef);
                     } catch (deleteError: any) {
                         if (deleteError.code !== 'storage/object-not-found') {
-                        throw deleteError;
+                           throw deleteError;
                         }
                         console.warn("Old image not found in Storage, skipping deletion:", selectedItem.src);
                     }
@@ -168,7 +168,7 @@ export default function CarouselAdmin() {
                 title: "Sukses!",
                 description: "Item carousel berhasil diperbarui.",
             });
-        } else {
+        } else if (dialogMode === 'add') {
             const docRef = await addDoc(collection(firestore, "carousel"), dataToSave);
             setCarouselItems(items => [...items, { id: docRef.id, ...dataToSave }]);
             toast({
