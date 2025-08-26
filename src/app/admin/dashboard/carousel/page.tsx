@@ -32,7 +32,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { storage, firestore } from "@/lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
-import { doc, collection, getDocs, updateDoc } from "firebase/firestore";
+import { doc, collection, getDocs, addDoc, updateDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,14 +45,21 @@ interface CarouselItem {
   status: "Published" | "Draft";
 }
 
+const newItemTemplate: Omit<CarouselItem, 'id'> = {
+    src: "https://placehold.co/400x225.png",
+    alt: "",
+    status: "Published",
+};
+
 export default function CarouselAdmin() {
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('edit');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
-  const [editedItem, setEditedItem] = useState<CarouselItem | null>(null);
+  const [editedItem, setEditedItem] = useState<Omit<CarouselItem, 'id'> | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { toast } = useToast();
 
@@ -78,87 +85,112 @@ export default function CarouselAdmin() {
 
 
   const handleEditClick = (item: CarouselItem) => {
+    setDialogMode('edit');
     setSelectedItem(item);
     setEditedItem({ ...item });
     setImageFile(null);
     setUploadProgress(0);
-    setIsEditDialogOpen(true);
+    setIsDialogOpen(true);
+  };
+  
+  const handleAddClick = () => {
+    setDialogMode('add');
+    setSelectedItem(null);
+    setEditedItem(newItemTemplate);
+    setImageFile(null);
+    setUploadProgress(0);
+    setIsDialogOpen(true);
   };
 
   const handleSaveChanges = async () => {
-    if (!editedItem || !selectedItem) return;
-  
+    if (!editedItem) return;
+
+    if (dialogMode === 'add' && !imageFile) {
+        toast({
+            variant: "destructive",
+            title: "Gambar Diperlukan!",
+            description: "Silakan pilih file gambar untuk diunggah.",
+        });
+        return;
+    }
+
     setIsUploading(true);
     let imageUrl = editedItem.src;
-  
+
     try {
-      if (imageFile) {
-        // Hanya hapus gambar lama jika itu adalah URL Firebase Storage
-        const isFirebaseStorageUrl = selectedItem.src && selectedItem.src.includes('firebasestorage.googleapis.com');
-        if (isFirebaseStorageUrl) {
-          try {
-            const oldImageRef = ref(storage, selectedItem.src);
-            await deleteObject(oldImageRef);
-          } catch (deleteError: any) {
-            if (deleteError.code !== 'storage/object-not-found') {
-              throw deleteError;
+        if (imageFile) {
+             if (dialogMode === 'edit' && selectedItem) {
+                const isFirebaseStorageUrl = selectedItem.src && selectedItem.src.includes('firebasestorage.googleapis.com');
+                if (isFirebaseStorageUrl) {
+                    try {
+                        const oldImageRef = ref(storage, selectedItem.src);
+                        await deleteObject(oldImageRef);
+                    } catch (deleteError: any) {
+                        if (deleteError.code !== 'storage/object-not-found') {
+                        throw deleteError;
+                        }
+                        console.warn("Old image not found in Storage, skipping deletion:", selectedItem.src);
+                    }
+                }
             }
-            console.warn("Old image not found in Storage, skipping deletion:", selectedItem.src);
-          }
+
+            const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
+            const uploadTask = uploadBytesResumable(imageRef, imageFile);
+
+            await new Promise<void>((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadProgress(progress);
+                    },
+                    (error) => {
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve();
+                    }
+                );
+            });
         }
-  
-        // Unggah gambar baru
-        const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
-        const uploadTask = uploadBytesResumable(imageRef, imageFile);
-  
-        await new Promise<void>((resolve, reject) => {
-          uploadTask.on('state_changed',
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadProgress(progress);
-            },
-            (error) => {
-              console.error("Upload error:", error);
-              reject(error);
-            },
-            async () => {
-              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve();
-            }
-          );
-        });
-      }
-  
-      const updatedData = {
-        alt: editedItem.alt,
-        src: imageUrl,
-      };
-  
-      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
-      await updateDoc(itemDocRef, updatedData);
-  
-      const finalItem = { ...selectedItem, ...updatedData };
-      setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
-  
-      toast({
-        title: "Sukses!",
-        description: "Item carousel berhasil diperbarui.",
-      });
-  
+        
+        const dataToSave = {
+            ...editedItem,
+            src: imageUrl,
+        };
+
+        if (dialogMode === 'edit' && selectedItem) {
+            const itemDocRef = doc(firestore, "carousel", selectedItem.id);
+            await updateDoc(itemDocRef, dataToSave);
+            setCarouselItems(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave } : item));
+            toast({
+                title: "Sukses!",
+                description: "Item carousel berhasil diperbarui.",
+            });
+        } else {
+            const docRef = await addDoc(collection(firestore, "carousel"), dataToSave);
+            setCarouselItems(items => [...items, { id: docRef.id, ...dataToSave }]);
+            toast({
+                title: "Sukses!",
+                description: "Item carousel baru berhasil ditambahkan.",
+            });
+        }
+
     } catch (error) {
-      console.error("Error saving changes: ", error);
-      toast({
-        variant: "destructive",
-        title: "Gagal!",
-        description: "Terjadi kesalahan saat menyimpan perubahan.",
-      });
+        console.error("Error saving changes: ", error);
+        toast({
+            variant: "destructive",
+            title: "Gagal!",
+            description: "Terjadi kesalahan saat menyimpan perubahan.",
+        });
     } finally {
-      setIsUploading(false);
-      setIsEditDialogOpen(false);
-      setUploadProgress(0);
-      setImageFile(null);
-      setSelectedItem(null);
-      setEditedItem(null);
+        setIsUploading(false);
+        setIsDialogOpen(false);
+        setUploadProgress(0);
+        setImageFile(null);
+        setSelectedItem(null);
+        setEditedItem(null);
     }
   };
 
@@ -191,7 +223,7 @@ export default function CarouselAdmin() {
           <h2 className="text-3xl font-bold tracking-tight">Carousel</h2>
           <p className="text-muted-foreground">Kelola gambar carousel di halaman utama.</p>
         </div>
-        <Button>
+        <Button onClick={handleAddClick}>
           <PlusCircle className="mr-2 h-4 w-4" /> Tambah Gambar
         </Button>
       </div>
@@ -274,12 +306,14 @@ export default function CarouselAdmin() {
         </Table>
       </div>
 
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Ubah Item Carousel</DialogTitle>
+            <DialogTitle>{dialogMode === 'edit' ? 'Ubah Item Carousel' : 'Tambah Item Carousel'}</DialogTitle>
             <DialogDescription>
-              Lakukan perubahan pada item carousel Anda di sini. Klik simpan jika sudah selesai.
+              {dialogMode === 'edit'
+                ? 'Lakukan perubahan pada item carousel Anda di sini. Klik simpan jika sudah selesai.'
+                : 'Unggah gambar baru dan masukkan alt text. Klik simpan untuk menambahkan.'}
             </DialogDescription>
           </DialogHeader>
           {editedItem && (
@@ -288,7 +322,7 @@ export default function CarouselAdmin() {
                 <Label>Pratinjau Gambar</Label>
                 <Image
                     src={editedItem.src}
-                    alt={editedItem.alt}
+                    alt={editedItem.alt || "Pratinjau"}
                     width={400}
                     height={225}
                     className="rounded-md object-cover aspect-video border"
@@ -307,10 +341,10 @@ export default function CarouselAdmin() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isUploading}>Batal</Button>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isUploading}>Batal</Button>
             <Button onClick={handleSaveChanges} disabled={isUploading}>
               {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Simpan Perubahan
+              Simpan
             </Button>
           </DialogFooter>
         </DialogContent>
