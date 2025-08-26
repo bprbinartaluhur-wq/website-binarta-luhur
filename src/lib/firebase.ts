@@ -9,7 +9,7 @@ import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   projectId: "binarta-luhur",
   appId: "1:889537582130:web:4a8e3304b4d8aad676d82b",
-  storageBucket: "binarta-luhur.firebasestorage.app",
+  storageBucket: "binarta-luhur.appspot.com",
   apiKey: "AIzaSyBZKSe0UgfUDHZhCwTPcp2c9h-50wazoQs",
   authDomain: "binarta-luhur.firebaseapp.com",
   messagingSenderId: "889537582130",
