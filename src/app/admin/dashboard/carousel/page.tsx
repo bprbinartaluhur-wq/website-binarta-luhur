@@ -90,20 +90,27 @@ export default function CarouselAdmin() {
     try {
       let imageUrl = editedItem.src;
 
+      // If a new image file is selected, upload it to Firebase Storage
       if (imageFile) {
         const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
         const snapshot = await uploadBytes(imageRef, imageFile);
         imageUrl = await getDownloadURL(snapshot.ref);
       }
 
-      const finalItem = { ...editedItem, src: imageUrl };
-      
-      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
-      await updateDoc(itemDocRef, {
-        alt: finalItem.alt,
-        src: finalItem.src,
-      });
+      // Prepare the data to be updated in Firestore
+      const updatedData = {
+        alt: editedItem.alt,
+        src: imageUrl,
+      };
 
+      // Update the document in Firestore
+      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
+      await updateDoc(itemDocRef, updatedData);
+
+      // Create the updated item for local state
+      const finalItem = { ...editedItem, src: imageUrl };
+
+      // Update the local state to reflect the changes immediately
       setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
       
       toast({
@@ -111,8 +118,11 @@ export default function CarouselAdmin() {
         description: "Item carousel berhasil diperbarui.",
       });
 
+      // Close the dialog and reset states
       setIsEditDialogOpen(false);
       setSelectedItem(null);
+      setEditedItem(null);
+      setImageFile(null);
 
     } catch (error) {
         console.error("Error saving changes: ", error);
