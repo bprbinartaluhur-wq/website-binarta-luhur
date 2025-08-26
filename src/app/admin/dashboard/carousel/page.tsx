@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Upload, Loader2, Image as ImageIcon } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Loader2, Image as ImageIcon } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { storage, firestore } from "@/lib/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { doc, collection, getDocs, updateDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
@@ -87,66 +87,83 @@ export default function CarouselAdmin() {
 
   const handleSaveChanges = async () => {
     if (!editedItem || !selectedItem) return;
-
+  
     setIsUploading(true);
-
+    let imageUrl = editedItem.src;
+  
     try {
-        let imageUrl = editedItem.src;
-
-        if (imageFile) {
-            const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
-            const uploadTask = uploadBytesResumable(imageRef, imageFile);
-
-            await new Promise<void>((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        setUploadProgress(progress);
-                    },
-                    (error) => {
-                        console.error("Upload error:", error);
-                        reject(error);
-                    },
-                    async () => {
-                        imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                        resolve();
-                    }
-                );
-            });
+      // Jika ada file gambar baru yang dipilih untuk diunggah
+      if (imageFile) {
+        // Hapus gambar lama terlebih dahulu
+        if (selectedItem.src) {
+          try {
+            const oldImageRef = ref(storage, selectedItem.src);
+            await deleteObject(oldImageRef);
+          } catch (deleteError: any) {
+            // Jika file lama tidak ditemukan, abaikan error dan lanjutkan
+            if (deleteError.code !== 'storage/object-not-found') {
+               throw deleteError; // Lemparkan error lain selain "tidak ditemukan"
+            }
+            console.warn("Old image not found, skipping deletion:", selectedItem.src);
+          }
         }
-
-        const updatedData = {
-            alt: editedItem.alt,
-            src: imageUrl,
-        };
-
-        const itemDocRef = doc(firestore, "carousel", selectedItem.id);
-        await updateDoc(itemDocRef, updatedData);
-
-        const finalItem = { ...editedItem, src: imageUrl };
-
-        setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
-
-        toast({
-            title: "Sukses!",
-            description: "Item carousel berhasil diperbarui.",
+  
+        // Unggah gambar baru
+        const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
+        const uploadTask = uploadBytesResumable(imageRef, imageFile);
+  
+        await new Promise<void>((resolve, reject) => {
+          uploadTask.on('state_changed',
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadProgress(progress);
+            },
+            (error) => {
+              console.error("Upload error:", error);
+              reject(error);
+            },
+            async () => {
+              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve();
+            }
+          );
         });
-
-        setIsEditDialogOpen(false);
-        setSelectedItem(null);
-        setEditedItem(null);
-        setImageFile(null);
-
+      }
+  
+      // Siapkan data untuk diperbarui di Firestore
+      const updatedData = {
+        alt: editedItem.alt,
+        src: imageUrl,
+      };
+  
+      // Perbarui dokumen di Firestore
+      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
+      await updateDoc(itemDocRef, updatedData);
+  
+      // Perbarui state lokal untuk menampilkan perubahan di UI
+      const finalItem = { ...selectedItem, ...updatedData };
+      setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
+  
+      toast({
+        title: "Sukses!",
+        description: "Item carousel berhasil diperbarui.",
+      });
+  
     } catch (error) {
-        console.error("Error saving changes: ", error);
-        toast({
-            variant: "destructive",
-            title: "Gagal!",
-            description: "Terjadi kesalahan saat menyimpan perubahan.",
-        });
+      console.error("Error saving changes: ", error);
+      toast({
+        variant: "destructive",
+        title: "Gagal!",
+        description: "Terjadi kesalahan saat menyimpan perubahan.",
+      });
     } finally {
-        setIsUploading(false);
-        setUploadProgress(0);
+      // Reset state setelah selesai
+      setIsUploading(false);
+      setIsEditDialogOpen(false);
+      setUploadProgress(0);
+      setImageFile(null);
+      setSelectedItem(null);
+      setEditedItem(null);
     }
   };
 
