@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Upload, Loader2 } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Upload, Loader2, Image as ImageIcon } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,43 +30,50 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { storage } from "@/lib/firebase";
+import { storage, firestore } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, collection, getDocs, updateDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CarouselItem {
+  id: string;
   src: string;
   alt: string;
   status: "Published" | "Draft";
 }
 
-const initialCarouselItems: CarouselItem[] = [
-  {
-    src: "https://placehold.co/1600x900.png",
-    alt: "Produk Inovatif 1",
-    status: "Published",
-  },
-  {
-    src: "https://placehold.co/1600x900.png",
-    alt: "Produk Inovatif 2",
-    status: "Published",
-  },
-  {
-    src: "https://placehold.co/1600x900.png",
-    alt: "Produk Inovatif 3",
-    status: "Published",
-  },
-];
-
 export default function CarouselAdmin() {
-  const [carouselItems, setCarouselItems] = useState(initialCarouselItems);
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
   const [editedItem, setEditedItem] = useState<CarouselItem | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchCarouselItems = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, "carousel"));
+        const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CarouselItem));
+        setCarouselItems(items);
+      } catch (error) {
+        console.error("Error fetching carousel items: ", error);
+        toast({
+          variant: "destructive",
+          title: "Gagal Mengambil Data!",
+          description: "Terjadi kesalahan saat mengambil data carousel dari database.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCarouselItems();
+  }, [toast]);
+
 
   const handleEditClick = (item: CarouselItem) => {
     setSelectedItem(item);
@@ -90,8 +97,14 @@ export default function CarouselAdmin() {
       }
 
       const finalItem = { ...editedItem, src: imageUrl };
+      
+      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
+      await updateDoc(itemDocRef, {
+        alt: finalItem.alt,
+        src: finalItem.src,
+      });
 
-      setCarouselItems(items => items.map(item => item.alt === selectedItem.alt ? finalItem : item));
+      setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
       
       toast({
         title: "Sukses!",
@@ -159,41 +172,68 @@ export default function CarouselAdmin() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {carouselItems.map((item) => (
-              <TableRow key={item.alt}>
-                <TableCell>
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    width={120}
-                    height={67.5}
-                    className="rounded-md object-cover aspect-video"
-                    unoptimized // Required for external URLs like Firebase Storage
-                  />
-                </TableCell>
-                <TableCell className="font-medium">{item.alt}</TableCell>
-                <TableCell>
-                  <Badge variant={item.status === 'Published' ? 'default' : 'secondary'}>
-                      {item.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                      <DropdownMenuItem onSelect={() => handleEditClick(item)}>Ubah</DropdownMenuItem>
-                      <DropdownMenuItem>Hapus</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Skeleton className="w-[120px] h-[67.5px] rounded-md" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-48" />
+                  </TableCell>
+                  <TableCell>
+                     <Skeleton className="h-6 w-20 rounded-full" />
+                  </TableCell>
+                  <TableCell>
+                    <div className="h-8 w-8" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : carouselItems.length > 0 ? (
+              carouselItems.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={120}
+                      height={67.5}
+                      className="rounded-md object-cover aspect-video"
+                      unoptimized // Required for external URLs like Firebase Storage
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{item.alt}</TableCell>
+                  <TableCell>
+                    <Badge variant={item.status === 'Published' ? 'default' : 'secondary'}>
+                        {item.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                        <DropdownMenuItem onSelect={() => handleEditClick(item)}>Ubah</DropdownMenuItem>
+                        <DropdownMenuItem>Hapus</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+                <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                       <ImageIcon className="mx-auto text-muted-foreground h-12 w-12 mb-2" />
+                       <h3 className="font-semibold">Data Carousel Kosong</h3>
+                       <p className="text-muted-foreground text-sm">Anda belum memiliki item carousel. Silakan tambahkan.</p>
+                    </TableCell>
+                </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
