@@ -31,11 +31,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { storage, firestore } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, collection, getDocs, updateDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 
 interface CarouselItem {
   id: string;
@@ -49,6 +50,7 @@ export default function CarouselAdmin() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
   const [editedItem, setEditedItem] = useState<CarouselItem | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -79,6 +81,7 @@ export default function CarouselAdmin() {
     setSelectedItem(item);
     setEditedItem({ ...item });
     setImageFile(null);
+    setUploadProgress(0);
     setIsEditDialogOpen(true);
   };
 
@@ -88,41 +91,51 @@ export default function CarouselAdmin() {
     setIsUploading(true);
 
     try {
-      let imageUrl = editedItem.src;
+        let imageUrl = editedItem.src;
 
-      // If a new image file is selected, upload it to Firebase Storage
-      if (imageFile) {
-        const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
-        const snapshot = await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
-      }
+        if (imageFile) {
+            const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
+            const uploadTask = uploadBytesResumable(imageRef, imageFile);
 
-      // Prepare the data to be updated in Firestore
-      const updatedData = {
-        alt: editedItem.alt,
-        src: imageUrl,
-      };
+            await new Promise<void>((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadProgress(progress);
+                    },
+                    (error) => {
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve();
+                    }
+                );
+            });
+        }
 
-      // Update the document in Firestore
-      const itemDocRef = doc(firestore, "carousel", selectedItem.id);
-      await updateDoc(itemDocRef, updatedData);
+        const updatedData = {
+            alt: editedItem.alt,
+            src: imageUrl,
+        };
 
-      // Create the updated item for local state
-      const finalItem = { ...editedItem, src: imageUrl };
+        const itemDocRef = doc(firestore, "carousel", selectedItem.id);
+        await updateDoc(itemDocRef, updatedData);
 
-      // Update the local state to reflect the changes immediately
-      setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
-      
-      toast({
-        title: "Sukses!",
-        description: "Item carousel berhasil diperbarui.",
-      });
+        const finalItem = { ...editedItem, src: imageUrl };
 
-      // Close the dialog and reset states
-      setIsEditDialogOpen(false);
-      setSelectedItem(null);
-      setEditedItem(null);
-      setImageFile(null);
+        setCarouselItems(items => items.map(item => item.id === selectedItem.id ? finalItem : item));
+
+        toast({
+            title: "Sukses!",
+            description: "Item carousel berhasil diperbarui.",
+        });
+
+        setIsEditDialogOpen(false);
+        setSelectedItem(null);
+        setEditedItem(null);
+        setImageFile(null);
 
     } catch (error) {
         console.error("Error saving changes: ", error);
@@ -133,6 +146,7 @@ export default function CarouselAdmin() {
         });
     } finally {
         setIsUploading(false);
+        setUploadProgress(0);
     }
   };
 
@@ -271,21 +285,12 @@ export default function CarouselAdmin() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="image-upload">Unggah Gambar Baru</Label>
-                <div className="flex items-center gap-2">
-                    <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} className="sr-only" />
-                    <Label htmlFor="image-upload" className="flex-grow">
-                        <Button asChild variant="outline" className="w-full">
-                            <span>
-                                <Upload className="mr-2 h-4 w-4" />
-                                Pilih File
-                            </span>
-                        </Button>
-                    </Label>
-                </div>
+                <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploading} />
+                {isUploading && <Progress value={uploadProgress} className="w-full mt-2" />}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="alt">Alt Text</Label>
-                <Input id="alt" value={editedItem.alt} onChange={(e) => handleAltTextChange(e.target.value)} />
+                <Input id="alt" value={editedItem.alt} onChange={(e) => handleAltTextChange(e.target.value)} disabled={isUploading} />
               </div>
             </div>
           )}
