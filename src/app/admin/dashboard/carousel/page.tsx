@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from "next/image";
@@ -115,6 +116,7 @@ export default function CarouselAdmin() {
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
     let imageUrl = editedItem.src;
 
     try {
@@ -137,7 +139,7 @@ export default function CarouselAdmin() {
             const imageRef = ref(storage, `carousel-images/${uuidv4()}-${imageFile.name}`);
             const uploadTask = uploadBytesResumable(imageRef, imageFile);
 
-            await new Promise<void>((resolve, reject) => {
+            imageUrl = await new Promise<string>((resolve, reject) => {
                 uploadTask.on('state_changed',
                     (snapshot) => {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -148,8 +150,8 @@ export default function CarouselAdmin() {
                         reject(error);
                     },
                     async () => {
-                        imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                        resolve();
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve(downloadURL);
                     }
                 );
             });
@@ -163,7 +165,7 @@ export default function CarouselAdmin() {
         if (dialogMode === 'edit' && selectedItem) {
             const itemDocRef = doc(firestore, "carousel", selectedItem.id);
             await updateDoc(itemDocRef, dataToSave);
-            setCarouselItems(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave } : item));
+            setCarouselItems(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave, id: selectedItem.id } : item));
             toast({
                 title: "Sukses!",
                 description: "Item carousel berhasil diperbarui.",
@@ -352,3 +354,5 @@ export default function CarouselAdmin() {
     </div>
   )
 }
+
+    
