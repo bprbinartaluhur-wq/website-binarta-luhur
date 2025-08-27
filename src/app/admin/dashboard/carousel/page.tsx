@@ -12,12 +12,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Loader2, Image as ImageIcon } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Loader2, Image as ImageIcon, Trash2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge";
@@ -29,11 +30,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { storage, firestore } from "@/lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
-import { doc, collection, getDocs, addDoc, updateDoc } from "firebase/firestore";
+import { doc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -56,10 +74,12 @@ export default function CarouselAdmin() {
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('edit');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedItem, setSelectedItem] = useState<CarouselItem | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<CarouselItem | null>(null);
   const [editedItem, setEditedItem] = useState<Omit<CarouselItem, 'id'> | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { toast } = useToast();
@@ -67,7 +87,8 @@ export default function CarouselAdmin() {
   useEffect(() => {
     const fetchCarouselItems = async () => {
       try {
-        const querySnapshot = await getDocs(collection(firestore, "carousel"));
+        const q = query(collection(firestore, "carousel"), orderBy("alt"));
+        const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CarouselItem));
         setCarouselItems(items);
       } catch (error) {
@@ -83,7 +104,6 @@ export default function CarouselAdmin() {
     };
     fetchCarouselItems();
   }, [toast]);
-
 
   const handleEditClick = (item: CarouselItem) => {
     setDialogMode('edit');
@@ -121,7 +141,7 @@ export default function CarouselAdmin() {
 
     try {
         if (imageFile) {
-             if (dialogMode === 'edit' && selectedItem) {
+            if (dialogMode === 'edit' && selectedItem) {
                 const isFirebaseStorageUrl = selectedItem.src && selectedItem.src.includes('firebasestorage.googleapis.com');
                 if (isFirebaseStorageUrl) {
                     try {
@@ -202,6 +222,12 @@ export default function CarouselAdmin() {
     }
   };
 
+  const handleStatusChange = (value: "Published" | "Draft") => {
+    if (editedItem) {
+      setEditedItem({ ...editedItem, status: value });
+    }
+  };
+
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && editedItem) {
@@ -217,6 +243,48 @@ export default function CarouselAdmin() {
     }
   };
 
+  const handleDeleteClick = (item: CarouselItem) => {
+    setItemToDelete(item);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+        const itemDocRef = doc(firestore, "carousel", itemToDelete.id);
+        await deleteDoc(itemDocRef);
+
+        const isFirebaseStorageUrl = itemToDelete.src && itemToDelete.src.includes('firebasestorage.googleapis.com');
+        if (isFirebaseStorageUrl) {
+            try {
+                const imageRef = ref(storage, itemToDelete.src);
+                await deleteObject(imageRef);
+            } catch (deleteError: any) {
+                if (deleteError.code !== 'storage/object-not-found') {
+                   throw deleteError;
+                }
+                console.warn("Image to delete not found in Storage:", itemToDelete.src);
+            }
+        }
+
+        setCarouselItems(items => items.filter(item => item.id !== itemToDelete.id));
+        toast({
+            title: "Berhasil Dihapus!",
+            description: `Item carousel "${itemToDelete.alt}" telah dihapus.`,
+        });
+    } catch (error) {
+        console.error("Error deleting item: ", error);
+        toast({
+            variant: "destructive",
+            title: "Gagal Menghapus!",
+            description: "Terjadi kesalahan saat menghapus item carousel.",
+        });
+    } finally {
+        setIsDeleting(false);
+        setItemToDelete(null);
+    }
+  };
 
   return (
     <div>
@@ -289,7 +357,11 @@ export default function CarouselAdmin() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                         <DropdownMenuItem onSelect={() => handleEditClick(item)}>Ubah</DropdownMenuItem>
-                        <DropdownMenuItem>Hapus</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onSelect={() => handleDeleteClick(item)} className="text-destructive focus:text-destructive">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Hapus
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -340,6 +412,18 @@ export default function CarouselAdmin() {
                 <Label htmlFor="alt">Alt Text</Label>
                 <Input id="alt" value={editedItem.alt} onChange={(e) => handleAltTextChange(e.target.value)} disabled={isUploading} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select onValueChange={handleStatusChange} defaultValue={editedItem.status} disabled={isUploading}>
+                  <SelectTrigger id="status">
+                    <SelectValue placeholder="Pilih status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Published">Published</SelectItem>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           )}
           <DialogFooter>
@@ -351,8 +435,24 @@ export default function CarouselAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+       <AlertDialog open={!!itemToDelete} onOpenChange={(open) => !open && setItemToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Apakah Anda Yakin?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tindakan ini tidak dapat dibatalkan. Ini akan menghapus item carousel secara permanen
+              dari server.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
+              {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
-
-    
