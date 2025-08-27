@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { Skeleton } from '../ui/skeleton';
 
@@ -17,7 +17,7 @@ interface CarouselItemData {
 
 async function getCarouselItems(): Promise<CarouselItemData[]> {
   try {
-    const q = query(collection(firestore, "carousel"), where("status", "==", "Published"), orderBy("alt"));
+    const q = query(collection(firestore, "carousel"), where("status", "==", "Published"));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       // Return a default placeholder if no items are found
