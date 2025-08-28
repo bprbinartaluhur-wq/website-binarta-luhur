@@ -62,16 +62,16 @@ export default function Header() {
       )}
     >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="hidden md:flex justify-end items-center h-8">
+        <div className="hidden md:flex justify-end items-center h-6">
             <div className="flex items-center gap-4">
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><TikTokIcon className="h-4 w-4" /></a>
             </div>
         </div>
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-                <Image src="/logo.png" alt="Binarta Luhur" width={140} height={35} data-ai-hint="company logo" />
+                <Image src="/logo.png" alt="Binarta Luhur" width={160} height={40} data-ai-hint="company logo" />
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -115,7 +115,7 @@ export default function Header() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
                 <div className="p-6">
                     <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
-                        <Image src="/logo.png" alt="Binarta Luhur" width={150} height={40} data-ai-hint="company logo" />
+                        <Image src="/logo.png" alt="Binarta Luhur" width={160} height={40} data-ai-hint="company logo" />
                     </Link>
                     <nav className="flex flex-col gap-2">
                     <Accordion type="single" collapsible className="w-full">
