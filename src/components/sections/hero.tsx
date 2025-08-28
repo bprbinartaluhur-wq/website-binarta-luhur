@@ -4,9 +4,10 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { Skeleton } from '../ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface CarouselItemData {
   src: string;
@@ -43,7 +44,6 @@ async function getCarouselItems(): Promise<CarouselItemData[]> {
 export default function Hero() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0)
-  const [count, setCount] = React.useState(0)
   const [carouselItems, setCarouselItems] = React.useState<CarouselItemData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -61,11 +61,10 @@ export default function Hero() {
       return
     }
 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
+    setCurrent(api.selectedScrollSnap())
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1)
+      setCurrent(api.selectedScrollSnap())
     })
 
     const interval = setInterval(() => {
@@ -79,10 +78,14 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, [api]);
 
+  const handleDotClick = (index: number) => {
+    api?.scrollTo(index);
+  };
+
   return (
     <section className="relative w-full">
         {isLoading ? (
-            <Skeleton className="w-full aspect-[3966/1632]" />
+            <Skeleton className="w-full aspect-[2.43/1]" />
         ) : (
             <Carousel setApi={setApi} className="w-full h-full" opts={{ loop: true }}>
                 <CarouselContent>
@@ -93,7 +96,7 @@ export default function Hero() {
                         src={item.src}
                         alt={item.alt}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         priority={index === 0}
                         sizes="(max-width: 768px) 100vw, 80vw"
                         />
@@ -103,10 +106,18 @@ export default function Hero() {
                 </CarouselContent>
                 <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 text-white bg-black/30 hover:bg-black/50 border-none" />
                 <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 text-white bg-black/30 hover:bg-black/50 border-none" />
-                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                    <p className="text-sm text-white bg-black/40 px-3 py-1 rounded-full">
-                        {current} / {count}
-                    </p>
+                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    {carouselItems.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handleDotClick(index)}
+                            className={cn(
+                                "h-3 w-3 rounded-full transition-colors",
+                                index === current ? 'bg-white' : 'bg-white/50 hover:bg-white/75'
+                            )}
+                            aria-label={`Go to slide ${index + 1}`}
+                        />
+                    ))}
                 </div>
             </Carousel>
         )}
