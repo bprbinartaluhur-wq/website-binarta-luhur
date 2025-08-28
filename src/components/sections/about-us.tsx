@@ -14,11 +14,11 @@ export default function AboutUs() {
         <div>
           <h2 className="text-3xl font-headline font-bold mb-4">Visi Kami</h2>
           <p className="text-foreground/80 text-base leading-relaxed mb-6">
-            Menjadi "BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah"
+            BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah
           </p>
            <h2 className="text-3xl font-headline font-bold mb-4">Misi Kami</h2>
           <p className="text-foreground/80 text-base leading-relaxed">
-            Menjadi pemimpin global dalam inovasi teknologi industri, diakui karena kualitas, integritas, dan komitmen kami terhadap keberlanjutan. Kami bercita-cita untuk menciptakan ekosistem di mana teknologi dan kemanusiaan bersinergi untuk mengatasi tantangan terbesar di dunia.
+            Menjadi "BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah"
           </p>
         </div>
         <div className="space-y-8">
