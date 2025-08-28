@@ -8,7 +8,7 @@ export default function AboutUsPreview() {
       <div className="text-center">
         <h2 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Tentang Binarta Luhur</h2>
         <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-          BPR Binarta Luhur adalah lembaga keuangan yang berdiri sejak tahun 1993, berfokus dalam penghimpunan dana masyarakat dalam bentuk Tabungan dan Deposito serta penyaluran Kredit untuk meningkatkan taraf hidup masyarakat, khususnya dalam permodalan usaha Mikro, Kecil dan Menengah.
+          BPR Binarta Luhur adalah lembaga keuangan yang berdiri sejak tahun 1993...
         </p>
         <div className="mt-8">
            <Button asChild variant="link" className="p-0 h-auto text-primary font-semibold text-lg">
