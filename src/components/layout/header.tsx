@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -55,8 +56,8 @@ export default function Header() {
         isScrolled ? 'bg-transparent backdrop-blur-md' : 'bg-accent'
       )}
     >
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex justify-end items-center h-4">
+      <div className="container mx-auto px-4 md:px-6 pt-2 pb-1">
+        <div className="flex justify-end items-center">
             <div className="flex items-center gap-3">
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Facebook className="h-4 w-4" /></a>
                 <a href="#" className="text-white/80 hover:text-white transition-colors"><Instagram className="h-4 w-4" /></a>
