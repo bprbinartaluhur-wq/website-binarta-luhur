@@ -3,10 +3,8 @@
 
 import * as React from 'react';
 import Image from 'next/image';
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { Skeleton } from '../ui/skeleton';
 
@@ -20,7 +18,6 @@ async function getCarouselItems(): Promise<CarouselItemData[]> {
     const q = query(collection(firestore, "carousel"), where("status", "==", "Published"));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      // Return a default placeholder if no items are found
       return [
         {
           src: "https://placehold.co/1600x900.png",
@@ -34,7 +31,6 @@ async function getCarouselItems(): Promise<CarouselItemData[]> {
     }));
   } catch (error) {
     console.error("Error fetching carousel items for hero: ", error);
-    // Return a default placeholder on error
     return [
       {
         src: "https://placehold.co/1600x900.png",
@@ -46,6 +42,8 @@ async function getCarouselItems(): Promise<CarouselItemData[]> {
 
 export default function Hero() {
   const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
   const [carouselItems, setCarouselItems] = React.useState<CarouselItemData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -59,9 +57,16 @@ export default function Hero() {
   }, []);
 
   React.useEffect(() => {
-    if (!api || isLoading) {
-      return;
+    if (!api) {
+      return
     }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
 
     const interval = setInterval(() => {
       if (api.canScrollNext()) {
@@ -72,7 +77,7 @@ export default function Hero() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [api, isLoading]);
+  }, [api]);
 
   return (
     <section className="relative w-full">
@@ -83,35 +88,28 @@ export default function Hero() {
                 <CarouselContent>
                 {carouselItems.map((item, index) => (
                     <CarouselItem key={index}>
-                    <div className="w-full h-auto aspect-[3966/1632] max-h-[80vh] relative">
+                    <div className="w-full h-auto aspect-[2.43/1] max-h-[80vh] relative">
                         <Image
                         src={item.src}
                         alt={item.alt}
                         fill
                         className="object-cover"
                         priority={index === 0}
+                        sizes="(max-width: 768px) 100vw, 80vw"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                     </div>
                     </CarouselItem>
                 ))}
                 </CarouselContent>
+                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 text-white bg-black/30 hover:bg-black/50 border-none" />
+                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 text-white bg-black/30 hover:bg-black/50 border-none" />
+                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                    <p className="text-sm text-white bg-black/40 px-3 py-1 rounded-full">
+                        {current} / {count}
+                    </p>
+                </div>
             </Carousel>
         )}
-
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-        <div className="bg-black/20 backdrop-blur-sm p-6 md:p-8 rounded-lg">
-          <h1 className="font-headline text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter drop-shadow-lg">
-            Inovasi Membangun Masa Depan
-          </h1>
-          <p className="mt-4 max-w-2xl text-md md:text-xl text-neutral-200 drop-shadow-md">
-            Temukan solusi terdepan dari Binarta Luhur yang dirancang untuk keunggulan dan ketahanan.
-          </p>
-          <Button asChild size="lg" className="mt-6 md:mt-8 bg-primary hover:bg-accent text-primary-foreground font-bold text-lg px-8 py-6 rounded-full transition-transform hover:scale-105">
-            <Link href="#produk">Jelajahi Produk</Link>
-          </Button>
-        </div>
-      </div>
     </section>
   );
 }
