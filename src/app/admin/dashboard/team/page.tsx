@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Loader2, Users, Trash2 } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Loader2, Users, Trash2, ArrowUpDown } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,12 +54,14 @@ interface TeamMember {
   image: string;
   name: string;
   role: string;
+  order: number;
 }
 
 const newItemTemplate: Omit<TeamMember, 'id'> = {
     image: "https://placehold.co/400x400.png",
     name: "",
     role: "",
+    order: 0,
 };
 
 export default function TeamAdmin() {
@@ -72,14 +74,14 @@ export default function TeamAdmin() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedItem, setSelectedItem] = useState<TeamMember | null>(null);
   const [itemToDelete, setItemToDelete] = useState<TeamMember | null>(null);
-  const [editedItem, setEditedItem] = useState<Omit<TeamMember, 'id'> | null>(null);
+  const [editedItem, setEditedItem] = useState<Omit<TeamMember, 'id' | 'order'> & { order: number | string } | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        const q = query(collection(firestore, "team"), orderBy("name"));
+        const q = query(collection(firestore, "team"), orderBy("order", "asc"));
         const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TeamMember));
         setTeamMembers(items);
@@ -181,19 +183,20 @@ export default function TeamAdmin() {
         const dataToSave = {
             ...editedItem,
             image: imageUrl,
+            order: Number(editedItem.order) || 0,
         };
 
         if (dialogMode === 'edit' && selectedItem) {
             const itemDocRef = doc(firestore, "team", selectedItem.id);
             await updateDoc(itemDocRef, dataToSave);
-            setTeamMembers(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave, id: selectedItem.id } : item));
+            setTeamMembers(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave, id: selectedItem.id } : item).sort((a,b) => a.order - b.order));
             toast({
                 title: "Sukses!",
                 description: "Anggota tim berhasil diperbarui.",
             });
         } else if (dialogMode === 'add') {
             const docRef = await addDoc(collection(firestore, "team"), dataToSave);
-            setTeamMembers(items => [...items, { id: docRef.id, ...dataToSave }]);
+            setTeamMembers(items => [...items, { id: docRef.id, ...dataToSave }].sort((a,b) => a.order - b.order));
             toast({
                 title: "Sukses!",
                 description: "Anggota tim baru berhasil ditambahkan.",
@@ -297,10 +300,16 @@ export default function TeamAdmin() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Foto</TableHead>
+              <TableHead className="w-[80px]">Foto</TableHead>
               <TableHead>Nama</TableHead>
               <TableHead>Jabatan</TableHead>
-              <TableHead>
+              <TableHead className="w-[100px] text-center">
+                 <div className="flex items-center justify-center gap-1">
+                    <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    Urutan
+                </div>
+              </TableHead>
+              <TableHead className="w-[80px]">
                 <span className="sr-only">Aksi</span>
               </TableHead>
             </TableRow>
@@ -317,6 +326,9 @@ export default function TeamAdmin() {
                   </TableCell>
                   <TableCell>
                      <Skeleton className="h-5 w-48" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-8 mx-auto" />
                   </TableCell>
                   <TableCell>
                     <div className="h-8 w-8" />
@@ -338,6 +350,7 @@ export default function TeamAdmin() {
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.role}</TableCell>
+                  <TableCell className="text-center font-medium">{item.order}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -361,7 +374,7 @@ export default function TeamAdmin() {
               ))
             ) : (
                 <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
+                    <TableCell colSpan={5} className="h-24 text-center">
                        <Users className="mx-auto text-muted-foreground h-12 w-12 mb-2" />
                        <h3 className="font-semibold">Data Tim Kosong</h3>
                        <p className="text-muted-foreground text-sm">Anda belum memiliki anggota tim. Silakan tambahkan.</p>
@@ -400,9 +413,15 @@ export default function TeamAdmin() {
                 <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploading} />
                 {isUploading && <Progress value={uploadProgress} className="w-full mt-2" />}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="name">Nama</Label>
-                <Input id="name" value={editedItem.name} onChange={(e) => handleFieldChange('name', e.target.value)} disabled={isUploading} />
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2 col-span-2">
+                    <Label htmlFor="name">Nama</Label>
+                    <Input id="name" value={editedItem.name} onChange={(e) => handleFieldChange('name', e.target.value)} disabled={isUploading} />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="order">Urutan</Label>
+                    <Input id="order" type="number" value={editedItem.order} onChange={(e) => handleFieldChange('order', e.target.value)} disabled={isUploading} />
+                </div>
               </div>
                <div className="space-y-2">
                 <Label htmlFor="role">Jabatan</Label>

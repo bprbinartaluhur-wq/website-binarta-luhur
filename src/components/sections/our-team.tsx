@@ -13,19 +13,21 @@ interface TeamMember {
   name: string;
   role: string;
   image: string;
+  order: number;
   dataAiHint?: string;
 }
 
 async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const q = query(collection(firestore, 'team'), orderBy('name'));
+    const q = query(collection(firestore, 'team'), orderBy('order', 'asc'));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       return [
-        { id: '1', name: 'Budi Santoso', role: 'Chief Executive Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait' },
-        { id: '2', name: 'Citra Lestari', role: 'Chief Technology Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional woman portrait' },
-        { id: '3', name: 'Agus Wijaya', role: 'Chief Operating Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'male executive portrait' },
-        { id: '4', name: 'Dewi Anggraini', role: 'Head of Marketing', image: 'https://placehold.co/400x400.png', dataAiHint: 'female executive portrait' },
+        { id: '1', name: 'Nama Anggota', role: 'Komisaris Utama', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait', order: 1 },
+        { id: '2', name: 'Nama Anggota', role: 'Komisaris', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional woman portrait', order: 2 },
+        { id: '3', name: 'Nama Anggota', role: 'Direktur Utama', image: 'https://placehold.co/400x400.png', dataAiHint: 'male executive portrait', order: 3 },
+        { id: '4', name: 'Nama Anggota', role: 'Direktur Operasional', image: 'https://placehold.co/400x400.png', dataAiHint: 'female executive portrait', order: 4 },
+        { id: '5', name: 'Nama Anggota', role: 'Direktur Kepatuhan', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait', order: 5 },
       ];
     }
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TeamMember));
@@ -33,10 +35,11 @@ async function getTeamMembers(): Promise<TeamMember[]> {
     console.error("Error fetching team members: ", error);
     // Return placeholder data on error
     return [
-        { id: '1', name: 'Budi Santoso', role: 'Chief Executive Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait' },
-        { id: '2', name: 'Citra Lestari', role: 'Chief Technology Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional woman portrait' },
-        { id: '3', name: 'Agus Wijaya', role: 'Chief Operating Officer', image: 'https://placehold.co/400x400.png', dataAiHint: 'male executive portrait' },
-        { id: '4', name: 'Dewi Anggraini', role: 'Head of Marketing', image: 'https://placehold.co/400x400.png', dataAiHint: 'female executive portrait' },
+      { id: '1', name: 'Nama Anggota', role: 'Komisaris Utama', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait', order: 1 },
+      { id: '2', name: 'Nama Anggota', role: 'Komisaris', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional woman portrait', order: 2 },
+      { id: '3', name: 'Nama Anggota', role: 'Direktur Utama', image: 'https://placehold.co/400x400.png', dataAiHint: 'male executive portrait', order: 3 },
+      { id: '4', name: 'Nama Anggota', role: 'Direktur Operasional', image: 'https://placehold.co/400x400.png', dataAiHint: 'female executive portrait', order: 4 },
+      { id: '5', name: 'Nama Anggota', role: 'Direktur Kepatuhan', image: 'https://placehold.co/400x400.png', dataAiHint: 'professional man portrait', order: 5 },
     ];
   }
 }
@@ -63,9 +66,9 @@ export default function OurTeam() {
             Bertemu dengan para pemimpin di balik inovasi dan kesuksesan Binarta Luhur.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {isLoading ? (
-            Array.from({ length: 4 }).map((_, index) => (
+            Array.from({ length: 5 }).map((_, index) => (
               <Card key={index} className="text-center overflow-hidden">
                 <CardHeader className="p-0">
                    <Skeleton className="aspect-square w-full" />
