@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
+              <Image src="/logo.png" alt="Binarta Luhur" width={270} height={68} data-ai-hint="company logo" />
             </div>
             <p className="text-accent-foreground/70">
               Menghadirkan inovasi dan kualitas terbaik untuk masa depan yang lebih cerah. Kami berkomitmen pada keunggulan dan kepuasan pelanggan.
