@@ -12,11 +12,11 @@ export default function AboutUs() {
 
       <div className="grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <h2 className="text-3xl font-headline font-bold mb-4">Misi Kami</h2>
+          <h2 className="text-3xl font-headline font-bold mb-4">Visi Kami</h2>
           <p className="text-foreground/80 text-base leading-relaxed mb-6">
-            Misi kami adalah memberdayakan klien kami dengan teknologi canggih dan layanan yang luar biasa. Kami berusaha untuk terus berinovasi, meningkatkan efisiensi, dan memberikan nilai tambah yang signifikan bagi setiap proyek yang kami tangani. Kami percaya pada kemitraan jangka panjang yang dibangun di atas kepercayaan dan kesuksesan bersama.
+            Menjadi "BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah"
           </p>
-           <h2 className="text-3xl font-headline font-bold mb-4">Visi Kami</h2>
+           <h2 className="text-3xl font-headline font-bold mb-4">Misi Kami</h2>
           <p className="text-foreground/80 text-base leading-relaxed">
             Menjadi pemimpin global dalam inovasi teknologi industri, diakui karena kualitas, integritas, dan komitmen kami terhadap keberlanjutan. Kami bercita-cita untuk menciptakan ekosistem di mana teknologi dan kemanusiaan bersinergi untuk mengatasi tantangan terbesar di dunia.
           </p>
