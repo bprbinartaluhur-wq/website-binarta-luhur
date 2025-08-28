@@ -17,9 +17,11 @@ export default function AboutUs() {
             BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah
           </p>
            <h2 className="text-3xl font-headline font-bold mb-4">Misi Kami</h2>
-          <p className="text-foreground/80 text-base leading-relaxed">
-            Menjadi "BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah"
-          </p>
+           <ol className="text-foreground/80 text-base leading-relaxed list-decimal list-inside space-y-2">
+            <li>Melakukan Pembiayaan kepada UMKM dengan pola pembiayaan terjangkau</li>
+            <li>Memperluas Jaringan kantor di daerah tertentu Kabupaten/Kota di Sulawesi Tengah</li>
+            <li>Menciptakan SDM yang unggul dan berkompetensi.</li>
+          </ol>
         </div>
         <div className="space-y-8">
             <div className="flex gap-6">
