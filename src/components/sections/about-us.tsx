@@ -1,4 +1,4 @@
-import { Users, Target, Zap, HandCoins, Network } from 'lucide-react';
+import { Users, Target, Zap, HandCoins, Network, Heart, Shield, Waves, Wind, Layers } from 'lucide-react';
 
 export default function AboutUs() {
   return (
@@ -45,43 +45,47 @@ export default function AboutUs() {
           </div>
         </div>
         <div className="space-y-8">
-            <div className="flex gap-6">
-                <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary">
-                        <Users className="h-8 w-8" />
+            <h2 className="text-3xl font-headline font-bold mb-4">Budaya Kerja</h2>
+            <div className="space-y-6 mt-[-1rem]">
+                 <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                            <Heart className="h-6 w-6" />
+                        </div>
                     </div>
+                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Loyalitas:</span> Setia dan berdedikasi penuh pada perusahaan dan nasabah.</p>
                 </div>
-                <div>
-                    <h3 className="text-xl font-headline font-semibold mb-2">Kolaborasi</h3>
-                    <p className="text-foreground/80">
-                        Kami percaya pada kekuatan kerja tim. Kolaborasi yang erat, baik secara internal maupun dengan klien, adalah kunci keberhasilan kami.
-                    </p>
-                </div>
-            </div>
-             <div className="flex gap-6">
-                <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary">
-                        <Target className="h-8 w-8" />
+                 <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                            <Shield className="h-6 w-6" />
+                        </div>
                     </div>
+                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Unggul:</span> Selalu berusaha memberikan hasil terbaik dan melampaui ekspektasi.</p>
                 </div>
-                <div>
-                    <h3 className="text-xl font-headline font-semibold mb-2">Integritas</h3>
-                    <p className="text-foreground/80">
-                       Kejujuran dan transparansi adalah pilar utama dalam setiap tindakan kami. Kami menjalankan bisnis dengan standar etika tertinggi.
-                    </p>
-                </div>
-            </div>
-             <div className="flex gap-6">
-                <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary">
-                        <Zap className="h-8 w-8" />
+                <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                            <Waves className="h-6 w-6" />
+                        </div>
                     </div>
+                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Harmoni:</span> Menciptakan lingkungan kerja yang sinergis dan saling mendukung.</p>
                 </div>
-                <div>
-                    <h3 className="text-xl font-headline font-semibold mb-2">Inovasi</h3>
-                    <p className="text-foreground/80">
-                       Kami tidak pernah berhenti mencari cara baru yang lebih baik. Inovasi adalah DNA kami, mendorong kami untuk terus maju dan berkembang.
-                    </p>
+                <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                            <Wind className="h-6 w-6" />
+                        </div>
+                    </div>
+                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Ulet:</span> Tekun dan tidak mudah menyerah dalam menghadapi tantangan.</p>
+                </div>
+                 <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                            <Layers className="h-6 w-6" />
+                        </div>
+                    </div>
+                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Rapi:</span> Bekerja dengan teratur, teliti, dan terorganisir.</p>
                 </div>
             </div>
         </div>
