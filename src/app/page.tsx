@@ -4,6 +4,8 @@ import Hero from '@/components/sections/hero';
 import Products from '@/components/sections/products';
 import Awards from '@/components/sections/awards';
 import News from '@/components/sections/news-preview';
+import AboutUsPreview from '@/components/sections/about-us-preview';
+import { Separator } from '@/components/ui/separator';
 
 export default function Home() {
   return (
@@ -12,6 +14,8 @@ export default function Home() {
       <main className="flex-grow pt-24">
         <Hero />
         <Products />
+        <AboutUsPreview />
+        <Separator />
         <Awards />
         <News />
       </main>
