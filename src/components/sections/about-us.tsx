@@ -1,4 +1,4 @@
-import { Users, Target, Zap } from 'lucide-react';
+import { Users, Target, Zap, HandCoins, Network } from 'lucide-react';
 
 export default function AboutUs() {
   return (
@@ -10,18 +10,39 @@ export default function AboutUs() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div>
+      <div className="grid md:grid-cols-2 gap-x-12 gap-y-16 items-start">
+        <div className="space-y-8">
           <h2 className="text-3xl font-headline font-bold mb-4">Visi Kami</h2>
-          <p className="text-foreground/80 text-base leading-relaxed mb-6">
+          <p className="text-foreground/80 text-base leading-relaxed mt-[-1rem]">
             BPR yang unggul yang ikut dalam meningkatkan kinerja UMKM serta Pembangunan di Wilayah Sulawesi Tengah
           </p>
-           <h2 className="text-3xl font-headline font-bold mb-4">Misi Kami</h2>
-           <ol className="text-foreground/80 text-base leading-relaxed list-decimal list-inside space-y-2">
-            <li>Melakukan Pembiayaan kepada UMKM dengan pola pembiayaan terjangkau</li>
-            <li>Memperluas Jaringan kantor di daerah tertentu Kabupaten/Kota di Sulawesi Tengah</li>
-            <li>Menciptakan SDM yang unggul dan berkompetensi.</li>
-          </ol>
+           <h2 className="text-3xl font-headline font-bold mb-4 mt-8">Misi Kami</h2>
+           <div className="space-y-6 mt-[-1rem]">
+             <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                        <HandCoins className="h-6 w-6" />
+                    </div>
+                </div>
+                <p className="text-foreground/80 leading-relaxed pt-3">Melakukan Pembiayaan kepada UMKM dengan pola pembiayaan terjangkau</p>
+            </div>
+             <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                        <Network className="h-6 w-6" />
+                    </div>
+                </div>
+                <p className="text-foreground/80 leading-relaxed pt-3">Memperluas Jaringan kantor di daerah tertentu Kabupaten/Kota di Sulawesi Tengah</p>
+            </div>
+             <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary">
+                        <Users className="h-6 w-6" />
+                    </div>
+                </div>
+                <p className="text-foreground/80 leading-relaxed pt-3">Menciptakan SDM yang unggul dan berkompetensi.</p>
+            </div>
+          </div>
         </div>
         <div className="space-y-8">
             <div className="flex gap-6">
