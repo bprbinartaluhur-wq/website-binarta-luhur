@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -12,7 +13,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Home, Package, Award, Newspaper, LogOut, GalleryHorizontal } from 'lucide-react';
+import { Home, Package, Award, Newspaper, LogOut, GalleryHorizontal, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -25,6 +26,7 @@ export default function AdminSidebar() {
         { href: '/admin/dashboard/products', icon: Package, label: 'Produk' },
         { href: '/admin/dashboard/awards', icon: Award, label: 'Penghargaan' },
         { href: '/admin/dashboard/news', icon: Newspaper, label: 'Berita' },
+        { href: '/admin/dashboard/team', icon: Users, label: 'Tim' },
     ];
 
     return (
