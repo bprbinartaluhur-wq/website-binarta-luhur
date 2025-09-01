@@ -5,12 +5,12 @@ export default function AboutUs() {
     <section id="tentang-kami" className="container mx-auto px-4 md:px-6 py-12 md:py-20">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Tentang Binarta Luhur</h1>
-        <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto text-justify">
+        <p className="mt-6 text-lg text-foreground/80 max-w-4xl mx-auto text-justify border bg-secondary/30 rounded-xl p-6 shadow-inner">
           BPR Binarta Luhur adalah lembaga keuangan yang berdiri sejak tahun 1993 dengan akta pendirian Nomor 04, tanggal 01 Maret 1993 di hadapan Notaris HANS KANSIL di Palu dan Surat Persetujuan Prinsip Pendirian Bank Perkreditan Rakyat dari departemen keuangan No: S-1270/MK.17/1993, tertanggal 04 Agustus 1993. BPR Binarta Luhur berfokus dalam penghimpunan dana masyarakat dalam bentuk Tabungan dan Deposito dan penyaluran berupa Kredit kepada masyarakat dalam rangka meningkatkan taraf hidup masyarakat khususnya dalam permodalah usaha Mikro, Kecil dan Menengah. BPR Binarta Luhur berkomitment untuk membantu permodalan untuk pengusaha di bidang perdangan, permodalan untuk pengolahan sawah pertanian untuk para petani, penggarap kebun dan peternakan.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-x-12 gap-y-16 items-start">
+      <div className="grid md:grid-cols-2 gap-x-12 gap-y-16 items-start mt-20">
         <div className="space-y-8">
           <h2 className="text-3xl font-headline font-bold mb-4">Visi Kami</h2>
           <p className="text-foreground/80 text-base leading-relaxed mt-[-1rem]">
@@ -53,7 +53,10 @@ export default function AboutUs() {
                             <Heart className="h-6 w-6" />
                         </div>
                     </div>
-                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Loyalitas:</span> Setia dan berdedikasi penuh pada perusahaan dan nasabah.</p>
+                    <div>
+                        <h3 className="font-bold text-foreground">Loyalitas</h3>
+                        <p className="text-foreground/80 leading-relaxed">Setia dan berdedikasi penuh pada perusahaan dan nasabah.</p>
+                    </div>
                 </div>
                  <div className="flex gap-4 items-start">
                     <div className="flex-shrink-0">
@@ -61,7 +64,10 @@ export default function AboutUs() {
                             <Shield className="h-6 w-6" />
                         </div>
                     </div>
-                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Unggul:</span> Selalu berusaha memberikan hasil terbaik dan melampaui ekspektasi.</p>
+                    <div>
+                        <h3 className="font-bold text-foreground">Unggul</h3>
+                        <p className="text-foreground/80 leading-relaxed">Selalu berusaha memberikan hasil terbaik dan melampaui ekspektasi.</p>
+                    </div>
                 </div>
                 <div className="flex gap-4 items-start">
                     <div className="flex-shrink-0">
@@ -69,7 +75,10 @@ export default function AboutUs() {
                             <Waves className="h-6 w-6" />
                         </div>
                     </div>
-                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Harmoni:</span> Menciptakan lingkungan kerja yang sinergis dan saling mendukung.</p>
+                    <div>
+                        <h3 className="font-bold text-foreground">Harmoni</h3>
+                        <p className="text-foreground/80 leading-relaxed">Menciptakan lingkungan kerja yang sinergis dan saling mendukung.</p>
+                    </div>
                 </div>
                 <div className="flex gap-4 items-start">
                     <div className="flex-shrink-0">
@@ -77,7 +86,10 @@ export default function AboutUs() {
                             <Wind className="h-6 w-6" />
                         </div>
                     </div>
-                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Ulet:</span> Tekun dan tidak mudah menyerah dalam menghadapi tantangan.</p>
+                    <div>
+                        <h3 className="font-bold text-foreground">Ulet</h3>
+                        <p className="text-foreground/80 leading-relaxed">Tekun dan tidak mudah menyerah dalam menghadapi tantangan.</p>
+                    </div>
                 </div>
                  <div className="flex gap-4 items-start">
                     <div className="flex-shrink-0">
@@ -85,7 +97,10 @@ export default function AboutUs() {
                             <Layers className="h-6 w-6" />
                         </div>
                     </div>
-                    <p className="text-foreground/80 leading-relaxed pt-3"><span className="font-bold">Rapi:</span> Bekerja dengan teratur, teliti, dan terorganisir.</p>
+                    <div>
+                        <h3 className="font-bold text-foreground">Rapi</h3>
+                        <p className="text-foreground/80 leading-relaxed">Bekerja dengan teratur, teliti, dan terorganisir.</p>
+                    </div>
                 </div>
             </div>
         </div>
