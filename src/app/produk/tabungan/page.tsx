@@ -4,6 +4,7 @@ import Footer from '@/components/layout/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
 
 const savingsProducts = [
   {
@@ -69,7 +70,16 @@ export default function TabunganPage() {
       <Header />
       <main className="flex-grow pt-28 pb-20">
         <div className="container mx-auto px-4 md:px-6">
-            <Card className="max-w-4xl mx-auto shadow-lg">
+            <Card className="max-w-4xl mx-auto shadow-lg overflow-hidden">
+                <div className="relative h-56 w-full">
+                    <Image 
+                        src="https://picsum.photos/800/300"
+                        alt="Ilustrasi menabung"
+                        fill
+                        className="object-cover"
+                        data-ai-hint="savings illustration"
+                    />
+                </div>
                 <CardHeader className="text-center">
                     <CardTitle className="text-4xl md:text-5xl font-headline">Produk Tabungan</CardTitle>
                     <p className="text-lg text-muted-foreground pt-2">
