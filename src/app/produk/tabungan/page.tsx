@@ -1,16 +1,17 @@
 
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
 
 const savingsProducts = [
   {
-    value: "item-1",
     title: "Tabungan Binarta",
     description: "Tabungan yang diperuntukkan untuk masyarakat umum dengan berbagai kemudahan dan keuntungan.",
+    image: "https://picsum.photos/600/400?random=1",
+    dataAiHint: "general savings people",
     benefits: [
       "Syarat mudah",
       "Suku bunga menarik",
@@ -25,9 +26,10 @@ const savingsProducts = [
     ],
   },
   {
-    value: "item-2",
     title: "Tabungan Luhur",
     description: "Tabungan dengan sistem kontrak dengan bunga menarik, cocok untuk investasi yang fleksibel.",
+    image: "https://picsum.photos/600/400?random=2",
+    dataAiHint: "investment growth flexible",
     benefits: [
       "Tabungan berjangka dengan bunga kompetitif",
       "Syarat mudah",
@@ -36,12 +38,13 @@ const savingsProducts = [
       "Setoran mulai Rp.10.000,-",
       "Bebas menentukan jangka waktu antara 12, 24 atau 36 bulan",
     ],
-    requirements: [], // No requirements specified
+    requirements: [],
   },
   {
-    value: "item-3",
     title: "TabunganKu",
     description: "Tabungan yang cocok untuk anak sekolah, bebas administrasi dengan bunga yang menarik.",
+    image: "https://picsum.photos/600/400?random=3",
+    dataAiHint: "student savings happy",
     benefits: [
       "Syarat mudah karena merupakan program pemerintah",
       "Suku bunga menarik",
@@ -70,55 +73,56 @@ export default function TabunganPage() {
       <Header />
       <main className="flex-grow pt-28 pb-20">
         <div className="container mx-auto px-4 md:px-6">
-            <Card className="max-w-4xl mx-auto shadow-lg overflow-hidden">
-                <div className="relative h-56 w-full">
-                    <Image 
-                        src="https://picsum.photos/800/300"
-                        alt="Ilustrasi menabung"
-                        fill
-                        className="object-cover"
-                        data-ai-hint="savings illustration"
-                    />
-                </div>
-                <CardHeader className="text-center">
+            <Card className="max-w-5xl mx-auto shadow-lg border-none">
+                <CardHeader className="text-center pb-12">
                     <CardTitle className="text-4xl md:text-5xl font-headline">Produk Tabungan</CardTitle>
-                    <p className="text-lg text-muted-foreground pt-2">
-                        Pilih solusi tabungan terbaik yang sesuai dengan kebutuhan Anda.
+                    <p className="text-lg text-muted-foreground pt-2 max-w-2xl mx-auto">
+                        Pilih solusi tabungan terbaik yang dirancang untuk memenuhi setiap tahap kehidupan finansial Anda.
                     </p>
                 </CardHeader>
-                <CardContent className="px-2 md:px-6">
-                    <Accordion type="single" collapsible className="w-full">
-                       {savingsProducts.map((product) => (
-                         <AccordionItem value={product.value} key={product.value}>
-                            <AccordionTrigger className="text-xl font-headline px-4 hover:bg-secondary/50 rounded-md">
-                                {product.title}
-                            </AccordionTrigger>
-                            <AccordionContent className="pt-4 pb-2 px-4">
-                                <p className="text-base text-foreground/80 mb-6">{product.description}</p>
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h3 className="font-bold text-lg mb-3 font-headline">Keuntungan</h3>
-                                        <ul className="space-y-2 text-foreground/80">
-                                            {product.benefits.map((benefit, i) => (
-                                                <ListItem key={i}>{benefit}</ListItem>
-                                            ))}
-                                        </ul>
+                <CardContent className="space-y-16">
+                    {savingsProducts.map((product, index) => (
+                        <div key={product.title}>
+                            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                                <div className="space-y-4">
+                                    <h2 className="text-3xl font-headline font-bold text-foreground">{product.title}</h2>
+                                    <p className="text-base text-foreground/80">{product.description}</p>
+                                    
+                                    <div className="space-y-6 pt-4">
+                                        <div>
+                                            <h3 className="font-bold text-lg mb-3 font-headline">Keuntungan</h3>
+                                            <ul className="space-y-2 text-foreground/80">
+                                                {product.benefits.map((benefit, i) => (
+                                                    <ListItem key={i}>{benefit}</ListItem>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        {product.requirements.length > 0 && (
+                                          <div>
+                                              <h3 className="font-bold text-lg mb-3 font-headline">Persyaratan</h3>
+                                              <ul className="space-y-2 text-foreground/80">
+                                                  {product.requirements.map((req, i) => (
+                                                      <ListItem key={i}>{req}</ListItem>
+                                                  ))}
+                                              </ul>
+                                          </div>
+                                        )}
                                     </div>
-                                    {product.requirements.length > 0 && (
-                                      <div>
-                                          <h3 className="font-bold text-lg mb-3 font-headline">Persyaratan</h3>
-                                          <ul className="space-y-2 text-foreground/80">
-                                              {product.requirements.map((req, i) => (
-                                                  <ListItem key={i}>{req}</ListItem>
-                                              ))}
-                                          </ul>
-                                      </div>
-                                    )}
                                 </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                       ))}
-                    </Accordion>
+                                
+                                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
+                                    <Image
+                                        src={product.image}
+                                        alt={`Ilustrasi ${product.title}`}
+                                        fill
+                                        className="object-cover"
+                                        data-ai-hint={product.dataAiHint}
+                                    />
+                                </div>
+                            </div>
+                            {index < savingsProducts.length - 1 && <Separator className="mt-16" />}
+                        </div>
+                    ))}
                 </CardContent>
             </Card>
         </div>
