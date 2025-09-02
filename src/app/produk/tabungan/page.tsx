@@ -38,7 +38,11 @@ const savingsProducts = [
       "Setoran mulai Rp.10.000,-",
       "Bebas menentukan jangka waktu antara 12, 24 atau 36 bulan",
     ],
-    requirements: [],
+    requirements: [
+      "Foto Copy Identitas yang masih berlaku",
+      "Setoran awal pembukaan tabungan",
+      "Mengisi Formulir Aplikasi Tabungan",
+    ],
   },
   {
     title: "TabunganKu",
