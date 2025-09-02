@@ -73,14 +73,23 @@ export default function TabunganPage() {
       <Header />
       <main className="flex-grow pt-28 pb-20">
         <div className="container mx-auto px-4 md:px-6">
-            <Card className="max-w-5xl mx-auto shadow-lg border-none">
+            <Card className="max-w-5xl mx-auto shadow-lg border-none overflow-hidden">
+                <div className="relative w-full h-48">
+                    <Image
+                        src="https://picsum.photos/800/200"
+                        alt="Ilustrasi Produk Tabungan"
+                        fill
+                        className="object-cover"
+                        data-ai-hint="abstract banking pattern"
+                    />
+                </div>
                 <CardHeader className="text-center pb-12">
                     <CardTitle className="text-4xl md:text-5xl font-headline">Produk Tabungan</CardTitle>
                     <p className="text-lg text-muted-foreground pt-2 max-w-2xl mx-auto">
                         Pilih solusi tabungan terbaik yang dirancang untuk memenuhi setiap tahap kehidupan finansial Anda.
                     </p>
                 </CardHeader>
-                <CardContent className="space-y-16">
+                <CardContent className="space-y-16 px-6 md:px-8 pb-12">
                     {savingsProducts.map((product, index) => (
                         <div key={product.title}>
                             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
