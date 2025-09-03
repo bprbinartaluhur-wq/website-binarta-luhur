@@ -22,7 +22,7 @@ body {
     --muted-foreground: 222 20% 40%;
     --accent: 225 100% 58%; /* dark blue #2962FF */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 60.2%; /* red */
     --destructive-foreground: 0 0% 98%;
     --border: 218 50% 85%;
     --input: 218 50% 85%;
