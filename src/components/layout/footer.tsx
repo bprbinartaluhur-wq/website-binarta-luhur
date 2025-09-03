@@ -19,14 +19,15 @@ export default function Footer() {
           <div className="md:col-span-1 lg:col-span-1">
             <h4 className="text-xl font-headline font-semibold mb-4">Lokasi Kantor</h4>
             <div className="overflow-hidden rounded-lg shadow-lg">
-               <Image
-                src="https://placehold.co/600x400.png"
-                alt="Peta Lokasi Kantor"
-                width={600}
-                height={400}
-                className="w-full h-auto"
-                data-ai-hint="office map"
-              />
+               <iframe
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d7978.845008924817!2d120.1659454676321!3d-0.8070701185183247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMMKwNDgnMjUuNSJTIDEyMMKwMTAnMjAuMyJF!5e0!3m2!1sid!2sid!4v1737950805716!5m2!1sid!2sid"
+                width="600"
+                height="450"
+                className="w-full h-full border-0"
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
           
