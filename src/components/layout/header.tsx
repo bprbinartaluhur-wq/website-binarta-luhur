@@ -65,15 +65,18 @@ export default function Header() {
       )}
     >
       <div className="bg-white text-muted-foreground transition-all duration-300 ease-in-out">
-          <div className="container mx-auto px-4 md:px-6 h-10 flex justify-end items-center text-sm">
-            <div className="flex items-center gap-x-6">
-                 {topNavItems.map((item, index) => (
-                    <Link key={item.name} href={item.href} className="hover:text-destructive transition-colors">
-                      {item.name}
-                    </Link>
-                 ))}
+           <div className="container mx-auto px-4 md:px-6 h-10 flex justify-center items-center text-sm">
+                <div className="flex items-center gap-x-3">
+                    {topNavItems.map((item, index) => (
+                        <div key={item.name} className="flex items-center gap-x-3">
+                            <Link href={item.href} className="hover:text-destructive transition-colors font-bold">
+                                {item.name}
+                            </Link>
+                            {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
       </div>
        <div
             className={cn(
