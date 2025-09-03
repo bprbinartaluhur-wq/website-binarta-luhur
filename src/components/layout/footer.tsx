@@ -44,7 +44,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-4">
                 <Mail className="h-6 w-6 text-primary shrink-0" />
-                <a href="mailto:info@binartaluhur.com" className="hover:text-primary transition-colors">info@binartaluhur.com</a>
+                <a href="mailto:info@bprbinartaluhur.com" className="hover:text-primary transition-colors">info@bprbinartaluhur.com</a>
               </li>
             </ul>
           </div>
