@@ -25,19 +25,9 @@ const topNavItems = [
 
 const navItems = [
   { name: 'Home', href: '/' },
-  { name: 'Tentang Kami', href: '/tentang-kami' },
-  { name: 'Publikasi', href: '/publikasi' },
-  { 
-    name: 'Produk', 
-    href: '#',
-    submenu: [
-        { name: 'Tabungan', href: '/produk/tabungan' },
-        { name: 'Deposito', href: '/produk/deposito' },
-        { name: 'Pinjaman', href: '/produk/pinjaman' },
-    ]
-  },
-  { name: 'Penghargaan', href: '/#penghargaan' },
-  { name: 'Kontak', href: '/#kontak' },
+  { name: 'Tabungan', href: '/produk/tabungan' },
+  { name: 'Deposito', href: '/produk/deposito' },
+  { name: 'Kredit', href: '/produk/pinjaman' },
 ];
 
 export default function Header() {
@@ -94,33 +84,15 @@ export default function Header() {
         >
         <div className="container mx-auto px-4 md:px-6">
             <div className={cn("flex items-center justify-end", isScrolled ? "h-16" : "h-20")}>
-                <nav className="hidden md:flex items-center gap-6">
+                <nav className="hidden md:flex items-center gap-8">
                 {navItems.map((item) => (
-                    item.submenu ? (
-                    <DropdownMenu key={item.name}>
-                        <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className={cn("text-md font-medium transition-colors hover:bg-transparent p-0", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}>
-                            {item.name}
-                            <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200 group-data-[state=open]:rotate-180" />
-                        </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                        {item.submenu.map((subItem) => (
-                            <DropdownMenuItem key={subItem.name} asChild>
-                            <Link href={subItem.href}>{subItem.name}</Link>
-                            </DropdownMenuItem>
-                        ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    ) : (
                     <Link
                         key={item.name}
                         href={item.href}
-                        className={cn("text-md font-medium transition-colors", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}
+                        className={cn("text-md font-bold transition-colors", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}
                     >
                         {item.name}
                     </Link>
-                    )
                 ))}
                 </nav>
 
@@ -138,40 +110,16 @@ export default function Header() {
                             <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
                         </Link>
                         <nav className="flex flex-col gap-2">
-                        <Accordion type="single" collapsible className="w-full">
-                            {navItems.map((item) => (
-                            item.submenu ? (
-                                <AccordionItem value={item.name} key={item.name} className="border-b-0">
-                                <AccordionTrigger className="text-xl font-medium text-foreground transition-colors hover:text-primary hover:no-underline py-3">
-                                    {item.name}
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-2">
-                                    <div className="flex flex-col gap-2 pl-4 border-l ml-2">
-                                    {item.submenu.map((subItem) => (
-                                        <Link
-                                        key={subItem.name}
-                                        href={subItem.href}
-                                        onClick={closeMobileMenu}
-                                        className="text-lg font-medium text-foreground/80 transition-colors hover:text-primary"
-                                        >
-                                        {subItem.name}
-                                        </Link>
-                                    ))}
-                                    </div>
-                                </AccordionContent>
-                                </AccordionItem>
-                            ) : (
-                                <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={closeMobileMenu}
-                                className="block text-xl font-medium text-foreground transition-colors hover:text-primary py-3"
-                                >
-                                {item.name}
-                                </Link>
-                            )
-                            ))}
-                        </Accordion>
+                        {navItems.map((item) => (
+                            <Link
+                            key={item.name}
+                            href={item.href}
+                            onClick={closeMobileMenu}
+                            className="block text-xl font-medium text-foreground transition-colors hover:text-primary py-3"
+                            >
+                            {item.name}
+                            </Link>
+                        ))}
                         </nav>
                         <div className="flex items-center gap-3 mt-8">
                             <a href="#" className="text-foreground/80 hover:text-primary transition-colors"><Facebook className="h-6 w-6" /></a>
