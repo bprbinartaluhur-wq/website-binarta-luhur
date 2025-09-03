@@ -87,7 +87,7 @@ export default function Header() {
        <div
             className={cn(
                 'transition-all duration-300 ease-in-out',
-                isScrolled ? 'bg-background/80 backdrop-blur-md shadow-md' : 'bg-transparent'
+                isScrolled ? 'bg-primary shadow-md' : 'bg-transparent'
             )}
         >
         <div className="container mx-auto px-4 md:px-6">
@@ -97,7 +97,7 @@ export default function Header() {
                     item.submenu ? (
                     <DropdownMenu key={item.name}>
                         <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className={cn("text-md font-medium transition-colors hover:bg-transparent p-0", isScrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white')}>
+                        <Button variant="ghost" className={cn("text-md font-medium transition-colors hover:bg-transparent p-0", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}>
                             {item.name}
                             <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200 group-data-[state=open]:rotate-180" />
                         </Button>
@@ -114,7 +114,7 @@ export default function Header() {
                     <Link
                         key={item.name}
                         href={item.href}
-                        className={cn("text-md font-medium transition-colors", isScrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white')}
+                        className={cn("text-md font-medium transition-colors", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}
                     >
                         {item.name}
                     </Link>
@@ -125,7 +125,7 @@ export default function Header() {
                 <div className="md:hidden">
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                     <SheetTrigger asChild>
-                     <Button variant="ghost" size="icon" className={cn(isScrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10 hover:text-white')}>
+                     <Button variant="ghost" size="icon" className={cn(isScrolled ? 'text-primary-foreground hover:bg-white/10' : 'text-white hover:bg-white/10 hover:text-white')}>
                         <Menu className="h-6 w-6" />
                         <span className="sr-only">Buka menu</span>
                     </Button>
