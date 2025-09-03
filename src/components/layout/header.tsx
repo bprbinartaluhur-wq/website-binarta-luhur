@@ -78,12 +78,12 @@ export default function Header() {
       </div>
        <div
             className={cn(
-                'transition-all duration-300 ease-in-out',
-                isScrolled ? 'bg-primary shadow-md' : 'bg-transparent'
+                'transition-all duration-300 ease-in-out absolute top-20 left-0 right-0',
+                isScrolled ? 'top-0 bg-primary shadow-md' : 'bg-transparent'
             )}
         >
         <div className="container mx-auto px-4 md:px-6">
-            <div className={cn("flex items-center justify-end", isScrolled ? "h-16" : "h-20")}>
+            <div className={cn("flex items-center justify-end h-20", isScrolled && "h-16")}>
                 <nav className="hidden md:flex items-center gap-8">
                 {navItems.map((item) => (
                     <Link
