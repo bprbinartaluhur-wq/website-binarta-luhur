@@ -60,12 +60,18 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        isScrolled ? 'bg-background shadow-md' : 'bg-transparent'
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out'
       )}
     >
-      <div className="bg-white text-muted-foreground transition-all duration-300 ease-in-out">
-           <div className="container mx-auto px-4 md:px-6 h-10 flex justify-center items-center text-sm">
+      <div 
+        className={cn(
+            "bg-white text-muted-foreground shadow-sm transition-transform duration-300 ease-in-out",
+            isScrolled && "-translate-y-full"
+        )}>
+           <div className="container mx-auto px-4 md:px-6 h-20 flex justify-between items-center text-sm">
+                <Link href="/" className="flex items-center gap-2">
+                    <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
+                </Link>
                 <div className="flex items-center gap-x-3">
                     {topNavItems.map((item, index) => (
                         <div key={item.name} className="flex items-center gap-x-3">
@@ -81,15 +87,11 @@ export default function Header() {
        <div
             className={cn(
                 'transition-all duration-300 ease-in-out',
-                isScrolled ? 'bg-background/80 backdrop-blur-md' : 'bg-accent'
+                isScrolled ? 'bg-background/80 backdrop-blur-md shadow-md' : 'bg-transparent'
             )}
         >
         <div className="container mx-auto px-4 md:px-6">
-            <div className="flex h-16 items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
-                </Link>
-
+            <div className={cn("flex items-center justify-end", isScrolled ? "h-16" : "h-20")}>
                 <nav className="hidden md:flex items-center gap-6">
                 {navItems.map((item) => (
                     item.submenu ? (
