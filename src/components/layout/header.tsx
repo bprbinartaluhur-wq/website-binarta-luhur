@@ -68,14 +68,16 @@ export default function Header() {
             "bg-white text-muted-foreground shadow-sm transition-transform duration-300 ease-in-out",
             isScrolled && "-translate-y-full"
         )}>
-           <div className="container mx-auto px-4 md:px-6 h-20 flex justify-between items-center text-sm">
-                <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
-                </Link>
-                <div className="flex items-center gap-x-3">
+           <div className="container mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
+                <div className="flex-shrink-0">
+                    <Link href="/" className="flex items-center gap-2">
+                        <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
+                    </Link>
+                </div>
+                <div className="hidden md:flex items-center gap-x-3 text-sm">
                     {topNavItems.map((item, index) => (
                         <div key={item.name} className="flex items-center gap-x-3">
-                            <Link href={item.href} className="hover:text-destructive transition-colors font-bold">
+                            <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
                                 {item.name}
                             </Link>
                             {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
