@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
@@ -30,7 +30,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 120);
     };
     window.addEventListener('scroll', handleScroll);
     handleScroll(); 
@@ -49,26 +49,26 @@ export default function Header() {
       )}
     >
       {/* Top Bar */}
-      <div className={cn("bg-white text-muted-foreground transition-all duration-300", isScrolled ? "h-0 overflow-hidden" : "h-24")}>
-           <div className="container mx-auto px-4 md:px-6 h-full flex items-center">
-                <div className="w-1/3">
+      <div className={cn(
+          "bg-white text-muted-foreground transition-all duration-300", 
+          isScrolled ? "h-0 overflow-hidden p-0" : "h-24"
+      )}>
+           <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
+                <div className="flex-shrink-0">
                     <Link href="/" className="flex items-center gap-2">
-                        <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
+                        <Image src="/logo.png" alt="Binarta Luhur" width={216} height={43.2} data-ai-hint="company logo" />
                     </Link>
                 </div>
-                <div className="w-1/3 flex justify-center">
-                    <div className="hidden md:flex items-center gap-x-3 text-sm">
-                        {topNavItems.map((item, index) => (
-                            <div key={item.name} className="flex items-center gap-x-3">
-                                <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
-                                    {item.name}
-                                </Link>
-                                {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
-                            </div>
-                        ))}
-                    </div>
+                <div className="hidden md:flex items-center gap-x-3 text-sm whitespace-nowrap">
+                    {topNavItems.map((item, index) => (
+                        <div key={item.name} className="flex items-center gap-x-3">
+                            <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
+                                {item.name}
+                            </Link>
+                            {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
+                        </div>
+                    ))}
                 </div>
-                <div className="w-1/3" />
             </div>
       </div>
       
@@ -89,7 +89,7 @@ export default function Header() {
 
             <div className="md:hidden flex-grow flex justify-start">
                  <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
-                    <Image src="/logo.png" alt="Binarta Luhur" width={200} height={40} data-ai-hint="company logo" />
+                    <Image src="/logo.png" alt="Binarta Luhur" width={216} height={43.2} data-ai-hint="company logo" />
                 </Link>
             </div>
 
@@ -104,7 +104,7 @@ export default function Header() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background p-0">
                   <div className="p-6">
                       <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
-                          <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
+                          <Image src="/logo.png" alt="Binarta Luhur" width={216} height={43.2} data-ai-hint="company logo" />
                       </Link>
                       <nav className="flex flex-col gap-2 mb-6">
                       {navItems.map((item) => (
