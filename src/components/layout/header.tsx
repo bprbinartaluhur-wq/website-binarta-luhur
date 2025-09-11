@@ -5,16 +5,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ChevronDown, Facebook, Instagram } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
 
 const topNavItems = [
     { name: 'Tentang Binarta', href: '/tentang-kami' },
@@ -50,15 +44,13 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out'
+        'fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 ease-in-out',
+        isScrolled ? 'shadow-lg' : ''
       )}
     >
-      <div 
-        className={cn(
-            "bg-white text-muted-foreground shadow-sm transition-transform duration-300 ease-in-out",
-            isScrolled && "-translate-y-full"
-        )}>
-           <div className="container mx-auto px-4 md:px-6 h-20 flex justify-between items-center">
+      {/* Top Bar */}
+      <div className="bg-white text-muted-foreground">
+           <div className="container mx-auto px-4 md:px-6 h-24 flex justify-between items-center">
                 <div className="flex-shrink-0">
                     <Link href="/" className="flex items-center gap-2">
                         <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
@@ -76,59 +68,70 @@ export default function Header() {
                 </div>
             </div>
       </div>
-       <div
-            className={cn(
-                'transition-all duration-300 ease-in-out absolute top-20 left-0 right-0',
-                isScrolled ? 'top-0 bg-primary shadow-md' : 'bg-transparent'
-            )}
-        >
-        <div className="container mx-auto px-4 md:px-6">
-            <div className={cn("flex items-center justify-end h-20", isScrolled && "h-16")}>
-                <nav className="hidden md:flex items-center gap-8">
-                {navItems.map((item) => (
-                    <Link
-                        key={item.name}
-                        href={item.href}
-                        className={cn("text-md font-bold transition-colors", isScrolled ? 'text-primary-foreground hover:text-white/80' : 'text-white/90 hover:text-white')}
-                    >
-                        {item.name}
-                    </Link>
-                ))}
-                </nav>
+      
+      {/* Bottom Bar - Main Navigation */}
+      <div className="bg-primary">
+        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between h-16">
+            <nav className="hidden md:flex items-center gap-8 h-full">
+            {navItems.map((item) => (
+                <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-md font-bold text-primary-foreground hover:text-white/80 h-full flex items-center border-b-4 border-transparent hover:border-white/80 transition-all"
+                >
+                    {item.name}
+                </Link>
+            ))}
+            </nav>
 
-                <div className="md:hidden">
-                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                    <SheetTrigger asChild>
-                     <Button variant="ghost" size="icon" className={cn(isScrolled ? 'text-primary-foreground hover:bg-white/10' : 'text-white hover:bg-white/10 hover:text-white')}>
-                        <Menu className="h-6 w-6" />
-                        <span className="sr-only">Buka menu</span>
-                    </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background">
-                    <div className="p-6">
-                        <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
-                            <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
-                        </Link>
-                        <nav className="flex flex-col gap-2">
-                        {navItems.map((item) => (
-                            <Link
-                            key={item.name}
-                            href={item.href}
-                            onClick={closeMobileMenu}
-                            className="block text-xl font-medium text-foreground transition-colors hover:text-primary py-3"
-                            >
-                            {item.name}
-                            </Link>
+            <div className="hidden md:flex items-center">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10">
+                    <Search className="h-5 w-5" />
+                    <span className="sr-only">Cari</span>
+                </Button>
+            </div>
+
+            <div className="md:hidden flex-grow flex justify-end">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                 <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 hover:text-white">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Buka menu</span>
+                </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background p-0">
+                  <div className="p-6">
+                      <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
+                          <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
+                      </Link>
+                      <nav className="flex flex-col gap-2 mb-6">
+                      {navItems.map((item) => (
+                          <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={closeMobileMenu}
+                          className="block text-xl font-medium text-foreground transition-colors hover:text-primary py-3"
+                          >
+                          {item.name}
+                          </Link>
+                      ))}
+                      </nav>
+                       <Separator />
+                      <div className="flex flex-col gap-2 mt-6">
+                        {topNavItems.map((item) => (
+                          <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={closeMobileMenu}
+                          className="block text-md font-medium text-muted-foreground transition-colors hover:text-primary py-2"
+                          >
+                          {item.name}
+                          </Link>
                         ))}
-                        </nav>
-                        <div className="flex items-center gap-3 mt-8">
-                            <a href="#" className="text-foreground/80 hover:text-primary transition-colors"><Facebook className="h-6 w-6" /></a>
-                            <a href="#" className="text-foreground/80 hover:text-primary transition-colors"><Instagram className="h-6 w-6" /></a>
-                        </div>
-                    </div>
-                    </SheetContent>
-                </Sheet>
-                </div>
+                      </div>
+                  </div>
+                </SheetContent>
+            </Sheet>
             </div>
         </div>
       </div>
