@@ -30,7 +30,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     handleScroll(); 
@@ -51,15 +51,15 @@ export default function Header() {
       {/* Top Bar */}
       <div className={cn(
           "bg-white text-muted-foreground transition-all duration-300", 
-          isScrolled ? "h-0 overflow-hidden p-0" : "h-16"
+          isScrolled ? "h-0 overflow-hidden p-0" : "h-12"
       )}>
            <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
                 <div className="flex-shrink-0">
                     <Link href="/" className="flex items-center gap-2">
-                        <Image src="/logo.png" alt="Binarta Luhur" width={172.8} height={34.56} data-ai-hint="company logo" />
+                        <Image src="/logo.png" alt="Binarta Luhur" width={138.24} height={27.648} data-ai-hint="company logo" />
                     </Link>
                 </div>
-                <div className="hidden md:flex items-center gap-x-3 text-sm whitespace-nowrap">
+                <div className="hidden md:flex flex-1 items-center justify-center gap-x-3 text-sm whitespace-nowrap">
                     {topNavItems.map((item, index) => (
                         <div key={item.name} className="flex items-center gap-x-3">
                             <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
@@ -89,7 +89,7 @@ export default function Header() {
 
             <div className="md:hidden flex-grow flex justify-start">
                  <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
-                    <Image src="/logo.png" alt="Binarta Luhur" width={172.8} height={34.56} data-ai-hint="company logo" />
+                    <Image src="/logo.png" alt="Binarta Luhur" width={138.24} height={27.648} data-ai-hint="company logo" />
                 </Link>
             </div>
 
