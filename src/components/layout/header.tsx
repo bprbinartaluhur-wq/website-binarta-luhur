@@ -45,7 +45,6 @@ export default function Header() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        isScrolled ? 'shadow-lg' : ''
       )}
     >
       {/* Top Bar */}
@@ -56,7 +55,7 @@ export default function Header() {
            <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
                 <div className="flex-shrink-0">
                     <Link href="/" className="flex items-center gap-2">
-                        <Image src="/logo.png" alt="Binarta Luhur" width={138.24} height={27.648} data-ai-hint="company logo" />
+                        <Image src="/logo.png" alt="Binarta Luhur" width={110.592} height={22.1184} data-ai-hint="company logo" />
                     </Link>
                 </div>
                 <div className="hidden md:flex flex-1 items-center justify-center gap-x-3 text-sm whitespace-nowrap">
@@ -73,25 +72,25 @@ export default function Header() {
       </div>
       
       {/* Bottom Bar - Main Navigation */}
-      <div className={cn("bg-primary transition-all duration-300", isScrolled ? 'fixed top-0 left-0 right-0' : '')}>
+      <div className={cn("bg-primary transition-all duration-300", isScrolled ? 'fixed top-0 left-0 right-0 shadow-lg' : '')}>
         <div className="container mx-auto px-4 md:px-6 flex items-center h-16">
-            <nav className="hidden md:flex items-center gap-8 h-full w-full justify-center">
+            <div className={cn("md:hidden flex-grow flex justify-start", isScrolled ? "block" : "hidden")}>
+                 <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
+                    <Image src="/logo.png" alt="Binarta Luhur" width={110.592} height={22.1184} data-ai-hint="company logo" />
+                </Link>
+            </div>
+            <nav className="hidden md:flex items-center justify-center gap-4 h-full w-full">
             {navItems.map((item) => (
                 <Link
                     key={item.name}
                     href={item.href}
-                    className="text-md font-bold text-primary-foreground hover:text-white/80 h-full flex items-center border-b-4 border-transparent hover:border-white/80 transition-all"
+                    className="text-md font-bold text-primary-foreground rounded-md px-4 py-2 h-auto flex items-center transition-colors hover:bg-white/10"
                 >
                     {item.name}
                 </Link>
             ))}
             </nav>
 
-            <div className="md:hidden flex-grow flex justify-start">
-                 <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
-                    <Image src="/logo.png" alt="Binarta Luhur" width={138.24} height={27.648} data-ai-hint="company logo" />
-                </Link>
-            </div>
 
             <div className="md:hidden flex-grow flex justify-end">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
