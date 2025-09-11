@@ -78,18 +78,22 @@ export default function Header() {
            !isVisible ? '-translate-y-10' : 'translate-y-0'
           )}>
         <div className="container mx-auto px-4 md:px-6 flex items-center h-16">
-            <div className="flex-1 flex justify-center">
-                 <nav className="hidden md:flex items-center justify-center gap-8 h-full">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className="text-md font-bold text-primary-foreground rounded-md px-3 py-2 h-auto flex items-center transition-colors hover:bg-black/10"
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
-                </nav>
+             <div className="flex-1" />
+             <nav className="hidden md:flex items-center justify-center gap-8 h-full">
+                {navItems.map((item) => (
+                    <Link
+                        key={item.name}
+                        href={item.href}
+                        className="text-md font-bold text-primary-foreground px-3 py-2 h-full flex items-center transition-colors hover:bg-black/10"
+                    >
+                        {item.name}
+                    </Link>
+                ))}
+            </nav>
+            <div className="flex-1 flex justify-end">
+                <Link href="/" className="hidden md:block">
+                     <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
+                </Link>
             </div>
 
             <div className="md:hidden flex-grow flex justify-end">
@@ -103,7 +107,7 @@ export default function Header() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-background p-0">
                   <div className="p-6">
                       <Link href="/" className="flex items-center gap-2 mb-8" onClick={closeMobileMenu}>
-                          {/* <Image src="/logo.png" alt="Binarta Luhur" width={172.8} height={34.56} data-ai-hint="company logo" /> */}
+                          <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
                       </Link>
                       <nav className="flex flex-col gap-2 mb-6">
                       {navItems.map((item) => (
