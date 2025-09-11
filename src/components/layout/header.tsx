@@ -51,15 +51,11 @@ export default function Header() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out',
-        !isVisible && '-translate-y-full'
-      )}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50">
       {/* Top Bar */}
       <div className={cn(
-          "bg-white text-muted-foreground transition-all duration-300 h-10"
+          "bg-white text-muted-foreground transition-transform duration-300 ease-in-out h-10",
+          !isVisible && '-translate-y-full'
       )}>
            <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-center">
                 <div className="hidden md:flex items-center justify-center gap-x-3 text-sm whitespace-nowrap">
@@ -76,7 +72,11 @@ export default function Header() {
       </div>
       
       {/* Bottom Bar - Main Navigation */}
-      <div className={cn("bg-primary transition-all duration-300")}>
+      <div className={cn(
+          "bg-primary transition-all duration-300",
+          "transform",
+           !isVisible ? '-translate-y-10' : 'translate-y-0'
+          )}>
         <div className="container mx-auto px-4 md:px-6 flex items-center h-16">
             <div className="flex-1 flex justify-center">
                  <nav className="hidden md:flex items-center justify-center gap-8 h-full">
