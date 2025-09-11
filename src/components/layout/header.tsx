@@ -78,7 +78,11 @@ export default function Header() {
            !isVisible ? '-translate-y-10' : 'translate-y-0'
           )}>
         <div className="container mx-auto px-4 md:px-6 flex items-center h-16">
-             <div className="flex-1" />
+             <div className="flex-1">
+                 <Link href="/" className="hidden md:block">
+                     <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
+                </Link>
+             </div>
              <nav className="hidden md:flex items-center justify-center gap-8 h-full">
                 {navItems.map((item) => (
                     <Link
@@ -91,9 +95,7 @@ export default function Header() {
                 ))}
             </nav>
             <div className="flex-1 flex justify-end">
-                <Link href="/" className="hidden md:block">
-                     <Image src="/logo.png" alt="Binarta Luhur" width={180} height={45} data-ai-hint="company logo" />
-                </Link>
+                {/* Placeholder for right side content if needed */}
             </div>
 
             <div className="md:hidden flex-grow flex justify-end">
