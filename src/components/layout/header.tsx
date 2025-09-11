@@ -44,35 +44,38 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 ease-in-out',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
         isScrolled ? 'shadow-lg' : ''
       )}
     >
       {/* Top Bar */}
-      <div className="bg-white text-muted-foreground">
-           <div className="container mx-auto px-4 md:px-6 h-24 flex justify-between items-center">
-                <div className="flex-shrink-0">
+      <div className={cn("bg-white text-muted-foreground transition-all duration-300", isScrolled ? "h-0 overflow-hidden" : "h-24")}>
+           <div className="container mx-auto px-4 md:px-6 h-full flex items-center">
+                <div className="w-1/3">
                     <Link href="/" className="flex items-center gap-2">
                         <Image src="/logo.png" alt="Binarta Luhur" width={270} height={54} data-ai-hint="company logo" />
                     </Link>
                 </div>
-                <div className="hidden md:flex items-center gap-x-3 text-sm">
-                    {topNavItems.map((item, index) => (
-                        <div key={item.name} className="flex items-center gap-x-3">
-                            <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
-                                {item.name}
-                            </Link>
-                            {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
-                        </div>
-                    ))}
+                <div className="w-1/3 flex justify-center">
+                    <div className="hidden md:flex items-center gap-x-3 text-sm">
+                        {topNavItems.map((item, index) => (
+                            <div key={item.name} className="flex items-center gap-x-3">
+                                <Link href={item.href} className="text-muted-foreground/80 hover:text-destructive transition-colors font-bold">
+                                    {item.name}
+                                </Link>
+                                {index < topNavItems.length - 1 && <span className="text-gray-300">|</span>}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+                <div className="w-1/3" />
             </div>
       </div>
       
       {/* Bottom Bar - Main Navigation */}
-      <div className="bg-primary">
-        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between h-16">
-            <nav className="hidden md:flex items-center gap-8 h-full">
+      <div className={cn("bg-primary transition-all duration-300", isScrolled ? 'fixed top-0 left-0 right-0' : '')}>
+        <div className="container mx-auto px-4 md:px-6 flex items-center h-16">
+            <nav className="hidden md:flex items-center gap-8 h-full w-full justify-center">
             {navItems.map((item) => (
                 <Link
                     key={item.name}
@@ -84,11 +87,10 @@ export default function Header() {
             ))}
             </nav>
 
-            <div className="hidden md:flex items-center">
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10">
-                    <Search className="h-5 w-5" />
-                    <span className="sr-only">Cari</span>
-                </Button>
+            <div className="md:hidden flex-grow flex justify-start">
+                 <Link href="/" className="flex items-center gap-2" onClick={closeMobileMenu}>
+                    <Image src="/logo.png" alt="Binarta Luhur" width={200} height={40} data-ai-hint="company logo" />
+                </Link>
             </div>
 
             <div className="md:hidden flex-grow flex justify-end">
