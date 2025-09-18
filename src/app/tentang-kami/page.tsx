@@ -39,7 +39,7 @@ const menuItems = [
   },
   {
     title: 'Budaya Kerja',
-    href: '/tentang-kami/visi-misi',
+    href: '/tentang-kami/budaya-kerja',
     image: 'https://picsum.photos/seed/culture/600/400',
     dataAiHint: 'team collaboration office',
   },
