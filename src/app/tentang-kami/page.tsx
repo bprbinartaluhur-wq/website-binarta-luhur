@@ -39,13 +39,13 @@ const menuItems = [
   },
   {
     title: 'Budaya Kerja',
-    href: '#',
+    href: '/tentang-kami/visi-misi',
     image: 'https://picsum.photos/seed/culture/600/400',
     dataAiHint: 'team collaboration office',
   },
   {
     title: 'Visi dan Misi',
-    href: '#',
+    href: '/tentang-kami/visi-misi',
     image: 'https://picsum.photos/seed/vision/600/400',
     dataAiHint: 'mountain peak success',
   },
