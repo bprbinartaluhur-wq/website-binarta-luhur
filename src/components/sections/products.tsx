@@ -6,7 +6,7 @@ const productItems = [
   {
     title: 'Tabungan',
     description: 'Rencanakan masa depan finansial Anda dengan produk tabungan kami yang fleksibel dan aman.',
-    image: 'https://picsum.photos/seed/tabungan/600/800',
+    image: '/Tab_Binarta.png',
     link: '/produk/tabungan',
     dataAiHint: 'people meeting savings',
   },
