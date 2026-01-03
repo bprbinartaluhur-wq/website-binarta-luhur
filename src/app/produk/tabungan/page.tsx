@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Header from '@/components/layout/header';
@@ -18,7 +19,7 @@ export default function TabunganPage() {
               src="/Tab_Binarta.png"
               alt="Layanan nasabah di kantor Binarta Luhur"
               fill
-              className="object-cover"
+              className="object-cover object-right"
               priority
               data-ai-hint="customer service meeting" />
           </div>
@@ -31,7 +32,7 @@ export default function TabunganPage() {
                 Tabungan
               </h1>
               <p className="text-base md:text-lg">
-                Produk Tabungan di BPR Binarta Luhur dirancang untuk Anda yang menginginkan program Tabungan menarik, berkualitas, dan berhadiah langsung.
+                Tabungan Binarta dibuat untuk memenuhi semua kebutuhan simpanan masyarakat yang aman dan terpercaya.
               </p>
             </div>
             <div
