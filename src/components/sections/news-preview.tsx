@@ -49,12 +49,6 @@ export default function NewsPreview() {
   return (
     <section id="berita" className="py-20 md:py-28 bg-primary/10">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold font-headline">Berita Terbaru</h2>
-          <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-            Ikuti perkembangan terbaru, inovasi, dan cerita dari Binarta Luhur.
-          </p>
-        </div>
         <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Highlight Berita Terbaru */}
             <Link href="/publikasi" className="group">
