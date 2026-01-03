@@ -20,7 +20,7 @@ const productItems = [
   {
     title: 'Kredit',
     description: 'Wujudkan berbagai kebutuhan Anda dengan solusi pinjaman yang cepat, mudah, dan terpercaya.',
-    image: 'https://picsum.photos/seed/kredit/600/800',
+    image: '/Kre_Binarta.png',
     link: '/produk/pinjaman',
     dataAiHint: 'couple planning loan',
   },
