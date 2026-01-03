@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Header from '@/components/layout/header';
@@ -13,20 +12,22 @@ export default function TabunganPage() {
       <Header />
       <main className="flex-grow pt-28">
         <section
-          className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] text-foreground">
+          className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] bg-background text-foreground overflow-hidden">
           <div className="absolute inset-0">
-            <Image
-              src="/banner_tab.png"
-              alt="Layanan nasabah di kantor Binarta Luhur"
-              fill
-              className="object-cover object-right"
-              priority
-              data-ai-hint="customer service meeting" />
+            <div className="absolute z-10 inset-y-0 right-0 w-1/2">
+                <Image
+                src="/banner_tab.png"
+                alt="Layanan nasabah di kantor Binarta Luhur"
+                fill
+                className="object-cover object-right"
+                priority
+                data-ai-hint="customer service meeting" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-20" />
           </div>
+          
           <div
-            className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent" />
-          <div
-            className="relative container mx-auto px-4 md:px-6 h-full flex flex-col items-start justify-center">
+            className="relative container mx-auto px-4 md:px-6 h-full flex flex-col items-start justify-center z-30">
             <div className="max-w-md space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold font-headline">
                 Tabungan
@@ -36,7 +37,7 @@ export default function TabunganPage() {
               </p>
             </div>
             <div
-              className="absolute bottom-8 left-1/2 md:left-auto md:-translate-x-1/2">
+              className="absolute bottom-8 left-1/2 md:left-auto md:translate-x-0 transform -translate-x-1/2 md:left-1/2">
               <div
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 text-white animate-bounce">
                 <ChevronDown className="w-6 h-6" />
