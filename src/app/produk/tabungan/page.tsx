@@ -16,7 +16,7 @@ export default function TabunganPage() {
           className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] text-foreground">
           <div className="absolute inset-0">
             <Image
-              src="/Tab_Binarta.png"
+              src="/banner_tab.png"
               alt="Layanan nasabah di kantor Binarta Luhur"
               fill
               className="object-cover object-right"
