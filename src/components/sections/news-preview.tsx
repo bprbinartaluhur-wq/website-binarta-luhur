@@ -1,9 +1,11 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { Separator } from '../ui/separator';
 
 const newsItems = [
   {
@@ -30,7 +32,18 @@ const newsItems = [
     image: 'https://placehold.co/600x400.png',
     dataAiHint: 'green factory'
   },
+   {
+    title: 'Acara Komunitas: Binarta Peduli Pendidikan',
+    category: 'CSR',
+    date: '25 Mei 2024',
+    description: 'Kami mendukung pendidikan anak-anak di daerah terpencil melalui program donasi buku dan beasiswa.',
+    image: 'https://placehold.co/600x400.png',
+    dataAiHint: 'children reading books'
+  },
 ];
+
+const latestNews = newsItems[0];
+const otherNews = newsItems.slice(1);
 
 export default function NewsPreview() {
   return (
@@ -42,44 +55,57 @@ export default function NewsPreview() {
             Ikuti perkembangan terbaru, inovasi, dan cerita dari Binarta Luhur.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {newsItems.map((item) => (
-            <Card key={item.title} className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col">
-              <CardHeader className="p-0">
-                <div className="aspect-video relative">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={item.dataAiHint}
-                  />
-                </div>
-              </CardHeader>
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="mb-2">
-                  <Badge variant="secondary" className="mr-2">{item.category}</Badge>
-                  <span className="text-sm text-muted-foreground">{item.date}</span>
-                </div>
-                <CardTitle className="font-headline text-xl mb-3">{item.title}</CardTitle>
-                <CardContent className="p-0 text-foreground/80 flex-grow">
-                  <p>{item.description}</p>
-                </CardContent>
-                <CardFooter className="p-0 mt-6">
-                   <Button asChild variant="link" className="p-0 h-auto text-primary font-semibold">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Highlight Berita Terbaru */}
+            <Link href="/publikasi" className="group">
+                <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+                    <CardHeader className="p-0">
+                        <div className="aspect-video relative">
+                        <Image
+                            src={latestNews.image}
+                            alt={latestNews.title}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={latestNews.dataAiHint}
+                        />
+                        </div>
+                    </CardHeader>
+                    <div className="p-6">
+                        <div className="mb-3">
+                        <Badge variant="secondary" className="mr-2">{latestNews.category}</Badge>
+                        <span className="text-sm text-muted-foreground">{latestNews.date}</span>
+                        </div>
+                        <CardTitle className="font-headline text-2xl mb-3 group-hover:text-primary transition-colors">{latestNews.title}</CardTitle>
+                        <CardContent className="p-0 text-foreground/80">
+                            <p>{latestNews.description}</p>
+                        </CardContent>
+                    </div>
+                </Card>
+            </Link>
+
+            {/* Daftar Berita Lainnya */}
+            <div className="flex flex-col gap-6">
+                 {otherNews.map((item, index) => (
+                    <div key={item.title}>
+                        <Link href="/publikasi" className="group block">
+                           <div className="mb-2">
+                                <Badge variant="outline" className="mr-2">{item.category}</Badge>
+                                <span className="text-sm text-muted-foreground">{item.date}</span>
+                            </div>
+                            <h3 className="font-headline text-xl font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</h3>
+                            <p className="text-muted-foreground mt-1 text-sm line-clamp-2">{item.description}</p>
+                        </Link>
+                        {index < otherNews.length - 1 && <Separator className="mt-6" />}
+                    </div>
+                ))}
+                <div className="mt-4">
+                    <Button asChild variant="link" className="p-0 h-auto text-primary font-semibold text-base">
                         <Link href="/publikasi">
-                            Baca Selengkapnya <ArrowRight className="ml-2 h-4 w-4" />
+                            Lihat Semua Berita <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </Button>
-                </CardFooter>
-              </div>
-            </Card>
-          ))}
-        </div>
-        <div className="text-center mt-12">
-            <Button asChild size="lg" className="bg-primary hover:bg-accent text-primary-foreground font-bold">
-                <Link href="/publikasi">Lihat Semua Berita</Link>
-            </Button>
+                </div>
+            </div>
         </div>
       </div>
     </section>

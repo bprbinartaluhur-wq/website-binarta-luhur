@@ -5,7 +5,6 @@ import Hero from '@/components/sections/hero';
 import Products from '@/components/sections/products';
 import News from '@/components/sections/news-preview';
 import CoreValues from '@/components/sections/core-values';
-import { Separator } from '@/components/ui/separator';
 
 export default function Home() {
   return (
