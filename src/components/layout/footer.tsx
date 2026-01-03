@@ -54,7 +54,7 @@ export default function Footer() {
                 <p>BPR Binarta Luhur merupakan peserta penjaminan LPS. Maksimum nilai simpanan yang dijamin LPS per Nasabah per Bank adalah Rp2 miliar.</p>
                 <p>
                     Untuk cek Tingkat Bunga Penjaminan LPS,{' '}
-                    <Link href="#" className="text-primary font-semibold hover:underline">
+                    <Link href="https://apps.lps.go.id/BankPesertaLPSRate" className="text-primary font-semibold hover:underline">
                         klik di sini
                     </Link>
                 </p>
