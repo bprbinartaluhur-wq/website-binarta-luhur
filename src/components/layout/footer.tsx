@@ -42,7 +42,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer id="kontak" className="bg-cream text-charcoal-light pt-12 pb-8 border-t border-orange-500">
+    <footer id="kontak" className="bg-cream text-charcoal-light pt-12 pb-8 border-t border-primary">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Left Column */}
@@ -82,7 +82,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-orange-500 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-lighter">
+        <div className="mt-8 border-t border-primary pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-lighter">
           <p>Copyright© BPR Binarta Luhur</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link href="#" className="hover:text-primary">Kebijakan Privasi</Link>
