@@ -47,14 +47,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Left Column */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-teal-600">PT BPR BINARTA LUHUR</h3>
+            <h3 className="text-xl font-bold text-primary">PT BPR BINARTA LUHUR</h3>
             <p className="text-sm">Jl. Trans Sulawesi, Masigi, Kel. Masigi, Kab. Parigi Moutong</p>
             <div className="text-xs space-y-2 text-charcoal-lighter">
                 <p>BPR Binarta Luhur berizin dan diawasi oleh Otoritas Jasa Keuangan & Bank Indonesia</p>
                 <p>BPR Binarta Luhur merupakan peserta penjaminan LPS. Maksimum nilai simpanan yang dijamin LPS per Nasabah per Bank adalah Rp2 miliar.</p>
                 <p>
                     Untuk cek Tingkat Bunga Penjaminan LPS,{' '}
-                    <Link href="#" className="text-teal-600 font-semibold hover:underline">
+                    <Link href="#" className="text-primary font-semibold hover:underline">
                         klik di sini
                     </Link>
                 </p>
@@ -74,7 +74,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center space-x-3">
               {socialLinks.map(({ href, icon: Icon, label }) => (
-                <Link href={href} key={label} aria-label={label} className="text-charcoal-light hover:text-teal-600">
+                <Link href={href} key={label} aria-label={label} className="text-charcoal-light hover:text-primary">
                   <Icon className="h-6 w-6" />
                 </Link>
               ))}
@@ -85,8 +85,8 @@ export default function Footer() {
         <div className="mt-8 border-t border-gray-300 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-lighter">
           <p>Copyright© BPR Binarta Luhur</p>
           <div className="flex gap-4 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-teal-600">Kebijakan Privasi</Link>
-            <Link href="#" className="hover:text-teal-600">Mekanisme Pengaduan</Link>
+            <Link href="#" className="hover:text-primary">Kebijakan Privasi</Link>
+            <Link href="#" className="hover:text-primary">Mekanisme Pengaduan</Link>
           </div>
         </div>
       </div>
