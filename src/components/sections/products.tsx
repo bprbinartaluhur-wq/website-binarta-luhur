@@ -13,7 +13,7 @@ const productItems = [
   {
     title: 'Deposito',
     description: 'Investasi cerdas dengan keuntungan optimal melalui produk deposito berjangka kami.',
-    image: 'https://picsum.photos/seed/deposito/600/800',
+    image: '/Dep_Binarta.png',
     link: '/produk/deposito',
     dataAiHint: 'investment discussion coffee',
   },
