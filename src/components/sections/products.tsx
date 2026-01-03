@@ -29,7 +29,7 @@ const productItems = [
 export default function Products() {
   return (
     <section id="produk" className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
         {productItems.map((item) => (
           <Link href={item.link} key={item.title} className="group relative block overflow-hidden h-96 md:h-auto md:aspect-[3/4]">
             <Image
