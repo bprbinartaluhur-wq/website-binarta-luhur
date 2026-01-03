@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 218 100% 95%; /* light blue #E7F0FF */
+    --background: 39 100% 97%; /* cream #FDF8F0 */
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -20,8 +20,8 @@ body {
     --secondary-foreground: 222 47% 11%;
     --muted: 218 50% 90%;
     --muted-foreground: 222 20% 40%;
-    --accent: 225 100% 58%; /* dark blue #2962FF */
-    --accent-foreground: 0 0% 100%;
+    --accent: 39 100% 97%; /* cream */
+    --accent-foreground: 24 9.8% 10%; /* charcoal */
     --destructive: 0 84.2% 60.2%; /* red */
     --destructive-foreground: 0 0% 98%;
     --border: 218 50% 85%;
