@@ -1,8 +1,54 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Newspaper, Award, Package, GalleryHorizontal, FileText } from 'lucide-react';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
+
+async function getCollectionCount(collectionName: string): Promise<number> {
+    try {
+        const querySnapshot = await getDocs(collection(firestore, collectionName));
+        return querySnapshot.size;
+    } catch (error) {
+        console.error(`Error fetching count for ${collectionName}:`, error);
+        return 0;
+    }
+}
 
 export default function Dashboard() {
+  const [counts, setCounts] = useState({
+    carousel: 0,
+    products: 0,
+    awards: 4, // Static for now
+    news: 3, // Static for now
+    publications: 0,
+    team: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCounts() {
+      setIsLoading(true);
+      const [carouselCount, productCount, publicationCount, teamCount] = await Promise.all([
+        getCollectionCount('carousel'),
+        getCollectionCount('products'),
+        getCollectionCount('publications'),
+        getCollectionCount('team'),
+      ]);
+      setCounts(prev => ({
+        ...prev,
+        carousel: carouselCount,
+        products: productCount,
+        publications: publicationCount,
+        team: teamCount,
+      }));
+      setIsLoading(false);
+    }
+    fetchCounts();
+  }, []);
+
   return (
     <div>
         <div className="flex items-center justify-between space-y-2 mb-8">
@@ -20,7 +66,7 @@ export default function Dashboard() {
                     <GalleryHorizontal className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">3</div>
+                    <div className="text-2xl font-bold">{isLoading ? '...' : counts.carousel}</div>
                     <p className="text-xs text-muted-foreground">
                         Gambar pada Halaman Utama
                     </p>
@@ -32,7 +78,7 @@ export default function Dashboard() {
                     <Package className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">3</div>
+                    <div className="text-2xl font-bold">{isLoading ? '...' : counts.products}</div>
                     <p className="text-xs text-muted-foreground">
                         Produk unggulan yang ditampilkan
                     </p>
@@ -44,7 +90,7 @@ export default function Dashboard() {
                     <Award className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">4</div>
+                    <div className="text-2xl font-bold">{counts.awards}</div>
                      <p className="text-xs text-muted-foreground">
                         Penghargaan yang diraih
                     </p>
@@ -56,7 +102,7 @@ export default function Dashboard() {
                     <Newspaper className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">3</div>
+                    <div className="text-2xl font-bold">{counts.news}</div>
                     <p className="text-xs text-muted-foreground">
                         Artikel berita yang dipublikasikan
                     </p>
@@ -68,7 +114,7 @@ export default function Dashboard() {
                     <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-2xl font-bold">{isLoading ? '...' : counts.publications}</div>
                     <p className="text-xs text-muted-foreground">
                         Dokumen yang dipublikasikan
                     </p>
@@ -80,7 +126,7 @@ export default function Dashboard() {
                     <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">4</div>
+                    <div className="text-2xl font-bold">{isLoading ? '...' : counts.team}</div>
                     <p className="text-xs text-muted-foreground">
                         Total anggota tim profesional
                     </p>
@@ -102,3 +148,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+    
