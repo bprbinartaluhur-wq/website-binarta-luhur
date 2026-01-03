@@ -23,7 +23,7 @@ export default function TabunganPage() {
                 priority
                 data-ai-hint="customer service meeting" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background from-40% via-background/80 to-transparent z-20" />
           </div>
           
           <div
