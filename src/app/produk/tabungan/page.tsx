@@ -14,7 +14,7 @@ export default function TabunganPage() {
         <section
           className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] bg-background text-foreground overflow-hidden">
           <div className="absolute inset-0">
-            <div className="absolute z-10 inset-y-0 right-0 w-1/2">
+            <div className="absolute z-10 inset-y-0 right-0 w-3/4">
                 <Image
                 src="/banner_tab.png"
                 alt="Layanan nasabah di kantor Binarta Luhur"
@@ -23,7 +23,7 @@ export default function TabunganPage() {
                 priority
                 data-ai-hint="customer service meeting" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-background from-40% via-background/80 to-transparent z-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background from-30% to-transparent z-20" />
           </div>
           
           <div
