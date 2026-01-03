@@ -34,7 +34,7 @@ const newsItems = [
 
 export default function NewsPreview() {
   return (
-    <section id="berita" className="py-20 md:py-28 bg-secondary/50">
+    <section id="berita" className="py-20 md:py-28 bg-primary/10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold font-headline">Berita Terbaru</h2>
