@@ -82,7 +82,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-300 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-lighter">
+        <div className="mt-8 border-t border-orange-500 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-lighter">
           <p>Copyright© BPR Binarta Luhur</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link href="#" className="hover:text-primary">Kebijakan Privasi</Link>
