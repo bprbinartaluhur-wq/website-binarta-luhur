@@ -393,7 +393,7 @@ export default function ProductsAdmin() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[480px]">
+        <DialogContent className="sm:max-w-[480px] grid-rows-[auto_minmax(0,1fr)_auto] max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>{dialogMode === 'edit' ? 'Ubah Produk' : 'Tambah Produk'}</DialogTitle>
             <DialogDescription>
@@ -403,7 +403,7 @@ export default function ProductsAdmin() {
             </DialogDescription>
           </DialogHeader>
           {editedItem && (
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 overflow-y-auto pr-6">
                <div className="space-y-2">
                 <Label>Pratinjau Gambar</Label>
                 <Image
