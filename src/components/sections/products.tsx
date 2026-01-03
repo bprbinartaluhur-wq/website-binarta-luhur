@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,21 +9,21 @@ const productItems = [
   {
     title: 'Tabungan',
     description: 'Rencanakan masa depan finansial Anda dengan produk tabungan kami yang fleksibel dan aman.',
-    image: 'https://placehold.co/600x400.png',
+    image: 'https://picsum.photos/600/400?random=1',
     link: '/produk/tabungan',
     dataAiHint: 'piggy bank savings'
   },
   {
     title: 'Deposito',
     description: 'Investasi cerdas dengan keuntungan optimal melalui produk deposito berjangka kami.',
-    image: 'https://placehold.co/600x400.png',
+    image: 'https://picsum.photos/600/400?random=2',
     link: '/produk/deposito',
     dataAiHint: 'investment growth chart'
   },
   {
     title: 'Pinjaman',
     description: 'Wujudkan berbagai kebutuhan Anda dengan solusi pinjaman yang cepat, mudah, dan terpercaya.',
-    image: 'https://placehold.co/600x400.png',
+    image: 'https://picsum.photos/600/400?random=3',
     link: '/produk/pinjaman',
     dataAiHint: 'house keys loan'
   },
