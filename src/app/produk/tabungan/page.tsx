@@ -97,8 +97,8 @@ export default function TabunganPage() {
         <section id="produk-tabungan" className="container mx-auto px-4 md:px-6 py-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {savingProducts.map((product) => (
-                    <Card key={product.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
-                         <div className="relative aspect-video rounded-t-lg overflow-hidden">
+                    <Card key={product.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col overflow-hidden rounded-lg">
+                         <div className="relative aspect-video">
                             <Image
                                 src={product.image}
                                 alt={`Ilustrasi ${product.title}`}
@@ -110,16 +110,8 @@ export default function TabunganPage() {
                         <CardHeader>
                             <CardTitle className="font-headline text-2xl">{product.title}</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex-grow space-y-4">
+                        <CardContent className="flex-grow">
                             <p className="text-foreground/80">{product.description}</p>
-                             <div>
-                                <h3 className="font-bold text-base mb-2 font-headline">Keuntungan:</h3>
-                                <ul className="space-y-2 text-sm text-foreground/80">
-                                    {product.benefits.map((benefit, i) => (
-                                        <ListItem key={i}>{benefit}</ListItem>
-                                    ))}
-                                </ul>
-                            </div>
                         </CardContent>
                     </Card>
                 ))}
