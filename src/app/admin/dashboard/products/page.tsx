@@ -63,6 +63,7 @@ interface Product {
   image: string;
   name: string;
   description: string;
+  category: "Tabungan" | "Deposito" | "Kredit";
   status: "Published" | "Draft";
 }
 
@@ -70,6 +71,7 @@ const newItemTemplate: Omit<Product, 'id'> = {
     image: "https://placehold.co/600x400.png",
     name: "",
     description: "",
+    category: "Tabungan",
     status: "Published",
 };
 
@@ -308,6 +310,7 @@ export default function ProductsAdmin() {
             <TableRow>
               <TableHead className="w-[150px]">Gambar</TableHead>
               <TableHead>Nama Produk</TableHead>
+              <TableHead>Kategori</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Deskripsi Singkat</TableHead>
               <TableHead>
@@ -324,6 +327,9 @@ export default function ProductsAdmin() {
                   </TableCell>
                   <TableCell>
                     <Skeleton className="h-5 w-48" />
+                  </TableCell>
+                  <TableCell>
+                     <Skeleton className="h-6 w-24 rounded-full" />
                   </TableCell>
                   <TableCell>
                      <Skeleton className="h-6 w-20 rounded-full" />
@@ -350,6 +356,9 @@ export default function ProductsAdmin() {
                     />
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{item.category}</Badge>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={item.status === 'Published' ? 'default' : 'secondary'}>
                         {item.status}
@@ -381,7 +390,7 @@ export default function ProductsAdmin() {
               ))
             ) : (
                 <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
+                    <TableCell colSpan={6} className="h-24 text-center">
                        <Package className="mx-auto text-muted-foreground h-12 w-12 mb-2" />
                        <h3 className="font-semibold">Data Produk Kosong</h3>
                        <p className="text-muted-foreground text-sm">Anda belum memiliki produk. Silakan tambahkan.</p>
@@ -428,6 +437,19 @@ export default function ProductsAdmin() {
                 <Label htmlFor="description">Deskripsi</Label>
                 <Textarea id="description" value={editedItem.description} onChange={(e) => handleFieldChange('description', e.target.value)} disabled={isUploading} />
               </div>
+               <div className="space-y-2">
+                <Label htmlFor="category">Kategori</Label>
+                <Select onValueChange={(value: "Tabungan" | "Deposito" | "Kredit") => handleFieldChange('category', value)} defaultValue={editedItem.category} disabled={isUploading}>
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Pilih kategori" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Tabungan">Tabungan</SelectItem>
+                    <SelectItem value="Deposito">Deposito</SelectItem>
+                    <SelectItem value="Kredit">Kredit</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
                 <Select onValueChange={(value: "Published" | "Draft") => handleFieldChange('status', value)} defaultValue={editedItem.status} disabled={isUploading}>
@@ -472,5 +494,6 @@ export default function ProductsAdmin() {
     </div>
   )
 }
+    
 
     
