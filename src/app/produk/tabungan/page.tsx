@@ -97,22 +97,19 @@ export default function TabunganPage() {
         <section id="produk-tabungan" className="container mx-auto px-4 md:px-6 py-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {savingProducts.map((product) => (
-                    <Card key={product.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col overflow-hidden rounded-lg">
-                         <div className="relative aspect-video">
-                            <Image
-                                src={product.image}
-                                alt={`Ilustrasi ${product.title}`}
-                                fill
-                                className="object-cover"
-                                data-ai-hint={product.dataAiHint}
-                            />
+                     <Card key={product.title} className="group relative shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden rounded-lg aspect-[4/5]">
+                        <Image
+                            src={product.image}
+                            alt={`Ilustrasi ${product.title}`}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            data-ai-hint={product.dataAiHint}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                            <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">{product.title}</CardTitle>
+                            <p className="mt-2 text-white/90 line-clamp-2">{product.description}</p>
                         </div>
-                        <CardHeader>
-                            <CardTitle className="font-headline text-2xl">{product.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            <p className="text-foreground/80">{product.description}</p>
-                        </CardContent>
                     </Card>
                 ))}
             </div>
