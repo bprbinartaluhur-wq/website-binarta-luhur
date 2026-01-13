@@ -1,63 +1,65 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import Image from 'next/image';
-import { ChevronDown, CheckCircle2 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { ChevronDown } from 'lucide-react';
+import { Card, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { firestore } from '@/lib/firebase';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const savingProducts = [
-  {
-    title: "Tabungan Binarta",
-    description: "Solusi simpanan dengan setoran awal yang ringan dan bebas biaya administrasi bulanan.",
-    image: "https://picsum.photos/seed/savings1/600/400",
-    dataAiHint: "piggy bank savings",
-    benefits: [
-      "Setoran awal ringan",
-      "Bebas biaya administrasi bulanan",
-      "Suku bunga kompetitif",
-      "Dijamin oleh LPS",
-    ],
-  },
-  {
-    title: "Tabungan Junior",
-    description: "Ajarkan si kecil menabung sejak dini dengan tabungan khusus anak yang mudah dan mendidik.",
-    image: "https://picsum.photos/seed/savings2/600/400",
-    dataAiHint: "child saving money",
-    benefits: [
-      "Mendidik anak tentang keuangan",
-      "Desain buku tabungan menarik",
-      "Setoran awal sangat terjangkau",
-      "Tidak ada biaya administrasi",
-    ],
-  },
-  {
-    title: "Tabungan Rencana",
-    description: "Wujudkan impian Anda dengan tabungan berjangka yang disiplin dan menguntungkan.",
-    image: "https://picsum.photos/seed/savings3/600/400",
-    dataAiHint: "planning vacation travel",
-    benefits: [
-      "Membantu mencapai tujuan finansial",
-      "Sistem autodebet bulanan",
-      "Jangka waktu fleksibel",
-      "Suku bunga lebih tinggi",
-    ],
-  },
-];
-
-const ListItem = ({ children }: { children: React.ReactNode }) => (
-    <li className="flex items-start gap-3">
-        <CheckCircle2 className="h-5 w-5 text-primary mt-1 shrink-0" />
-        <span>{children}</span>
-    </li>
-);
-
+interface SavingProduct {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  link: string;
+  dataAiHint?: string;
+}
 
 export default function TabunganPage() {
+  const [savingProducts, setSavingProducts] = useState<SavingProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSavingProducts = async () => {
+      try {
+        const q = query(
+          collection(firestore, "products"), 
+          where("category", "==", "Tabungan"),
+          where("status", "==", "Published"),
+          orderBy("name")
+        );
+        const querySnapshot = await getDocs(q);
+        const products = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            description: data.description,
+            image: data.image,
+            link: `/produk/tabungan/${doc.id}`, // Placeholder link
+            dataAiHint: 'savings product',
+          } as SavingProduct;
+        });
+        setSavingProducts(products);
+      } catch (error) {
+        console.error("Error fetching saving products:", error);
+        // Optionally set some default/error state
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSavingProducts();
+  }, []);
+
   return (
-    (<div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow pb-20">
         <section
@@ -72,7 +74,7 @@ export default function TabunganPage() {
                 priority
                 data-ai-hint="customer service meeting" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-background from-30% to-transparent z-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background from-30% via-background/70 to-transparent z-20" />
           </div>
           
           <div
@@ -96,30 +98,44 @@ export default function TabunganPage() {
         </section>
         
         <section id="produk-tabungan" className="container mx-auto px-4 md:px-6 py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {savingProducts.map((product) => (
-                     <Link href="#" key={product.title}>
-                        <Card className="group relative shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden rounded-lg aspect-[4/5]">
-                            <Image
-                                src={product.image}
-                                alt={`Ilustrasi ${product.title}`}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                data-ai-hint={product.dataAiHint}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                                <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">{product.title}</CardTitle>
-                                <p className="mt-2 text-white/90 line-clamp-2">{product.description}</p>
-                            </div>
-                        </Card>
-                    </Link>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {isLoading ? (
+                  Array.from({length: 3}).map((_, index) => (
+                    <Card key={index} className="aspect-[4/5] overflow-hidden rounded-lg">
+                      <Skeleton className="w-full h-full" />
+                    </Card>
+                  ))
+                ) : (
+                  savingProducts.map((product) => (
+                      <Link href={product.link} key={product.id}>
+                          <Card className="group relative shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden rounded-lg aspect-[4/5]">
+                              <Image
+                                  src={product.image}
+                                  alt={`Ilustrasi ${product.name}`}
+                                  fill
+                                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                  data-ai-hint={product.dataAiHint}
+                                  unoptimized
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                  <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">{product.name}</CardTitle>
+                                  <p className="mt-2 text-white/90 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{product.description}</p>
+                              </div>
+                          </Card>
+                      </Link>
+                  ))
+                )}
+                 {!isLoading && savingProducts.length === 0 && (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-muted-foreground">Belum ada produk tabungan yang tersedia.</p>
+                  </div>
+                )}
             </div>
         </section>
 
       </main>
       <Footer />
-    </div>)
+    </div>
   );
 }
