@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
       </head>
-      <body className="font-body bg-background antialiased pt-28">
+      <body className="font-body bg-background antialiased pt-24">
         {children}
         <Toaster />
       </body>

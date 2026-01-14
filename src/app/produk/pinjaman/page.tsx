@@ -51,7 +51,7 @@ export default function PinjamanPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28">
+      <main className="flex-grow">
          <Breadcrumb items={[{label: 'Produk', href: '/produk'}, {label: 'Pinjaman'}]} />
         <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <Card className="max-w-5xl mx-auto shadow-lg border-none overflow-hidden">

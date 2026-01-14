@@ -62,7 +62,7 @@ export default function TentangKamiPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28">
+      <main className="flex-grow">
         <Breadcrumb items={[{label: 'Tentang Kami'}]} />
         <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

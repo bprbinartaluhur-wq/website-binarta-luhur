@@ -19,7 +19,7 @@ type BreadcrumbProps = React.ComponentProps<'nav'> & {
 
 export function Breadcrumb({ items, className, containerClassName, ...props }: BreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className={cn('bg-secondary', containerClassName)}>
+    <nav aria-label="Breadcrumb" className={cn('bg-background', containerClassName)}>
         <ol className={cn('container mx-auto flex items-center gap-1.5 break-words px-4 py-3 text-sm text-muted-foreground sm:gap-2.5 md:px-6', className)} {...props}>
             <li className="inline-flex items-center gap-1.5">
                 <Link href="/" className="flex items-center gap-1.5 text-foreground/80 transition-colors hover:text-foreground">

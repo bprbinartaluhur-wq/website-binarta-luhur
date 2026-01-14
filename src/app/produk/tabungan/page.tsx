@@ -61,7 +61,7 @@ export default function TabunganPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28">
+      <main className="flex-grow">
         <Breadcrumb items={[{label: 'Produk', href: '/produk'}, {label: 'Tabungan'}]} />
         <section
           className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] bg-background text-foreground overflow-hidden">
