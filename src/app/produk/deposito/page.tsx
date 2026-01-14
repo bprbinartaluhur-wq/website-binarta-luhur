@@ -1,129 +1,138 @@
+
+'use client';
+
+import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
+import { ChevronDown } from 'lucide-react';
+import { Card, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
+import { firestore } from '@/lib/firebase';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 
-const depositProducts = [
-  {
-    title: "Deposito Binarta",
-    description: "Pilihan investasi aman dengan suku bunga kompetitif dan persyaratan yang mudah.",
-    image: "https://picsum.photos/600/400?random=4",
-    dataAiHint: "secure investment safe",
-    benefits: [
-      "Syarat mudah",
-      "Suku bunga menarik",
-      "Deposito Mulai dari 5 Juta Rupiah",
-      "Jangka Waktu Mulai dari 3 Bulan",
-      "Bebas biaya administrasi",
-      "Simpanan dijamin LPS",
-    ],
-    requirements: [
-      "Foto Copy Identitas yang masih berlaku",
-      "Mengisi Formulir Pembukaan Tabungan",
-      "Setoran awal pembukaan tabungan",
-    ],
-  },
-  {
-    title: "Deposito DBOC",
-    description: "Deposito fleksibel untuk kebutuhan investasi Anda dengan nominal yang lebih besar dan bunga optimal.",
-    image: "https://picsum.photos/600/400?random=5",
-    dataAiHint: "flexible investment money",
-    benefits: [
-        "Deposito flexibel untuk kebutuhan anda",
-        "Syarat mudah",
-        "Suku bunga menarik",
-        "Deposito mulai dari 100.000.000 Rupiah",
-        "Simpanan dijamin LPS",
-        "Bebas menentukan jangka waktu antara 3, 12, 24 atau 36 bulan",
-    ],
-    requirements: [
-        "Foto Copy Identitas yang masih berlaku",
-        "Setoran awal pembukaan Deposito",
-        "Mengisi Formulir Aplikasi Deposito",
-    ],
-  },
-];
-
-
-const ListItem = ({ children }: { children: React.ReactNode }) => (
-    <li className="flex items-start gap-3">
-        <CheckCircle2 className="h-5 w-5 text-primary mt-1 shrink-0" />
-        <span>{children}</span>
-    </li>
-);
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  link: string;
+  dataAiHint?: string;
+}
 
 export default function DepositoPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const q = query(
+          collection(firestore, "products"), 
+          where("category", "==", "Deposito"),
+          where("status", "==", "Published"),
+          orderBy("name")
+        );
+        const querySnapshot = await getDocs(q);
+        const fetchedProducts = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            description: data.description,
+            image: data.image,
+            link: `/produk/deposito/${doc.id}`,
+            dataAiHint: 'deposit product',
+          } as Product;
+        });
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error("Error fetching deposit products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
         <Breadcrumb items={[{label: 'Produk', href: '/produk'}, {label: 'Deposito'}]} />
-        <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
-            <Card className="max-w-5xl mx-auto shadow-lg border-none overflow-hidden">
-                <div className="relative w-full h-48">
-                    <Image
-                        src="https://picsum.photos/800/200?random=6"
-                        alt="Ilustrasi Produk Deposito"
-                        fill
-                        className="object-cover"
-                        data-ai-hint="secure finance illustration"
-                    />
-                </div>
-                <CardHeader className="text-center pb-12">
-                    <CardTitle className="text-4xl md:text-5xl font-headline">Produk Deposito</CardTitle>
-                    <p className="text-lg text-muted-foreground pt-2 max-w-2xl mx-auto">
-                        Maksimalkan potensi dana Anda dengan solusi deposito yang aman dan menguntungkan.
-                    </p>
-                </CardHeader>
-                <CardContent className="space-y-16 px-6 md:px-8 pb-12">
-                    {depositProducts.map((product, index) => (
-                        <div key={product.title}>
-                            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-                                <div className="space-y-4">
-                                    <h2 className="text-3xl font-headline font-bold text-foreground">{product.title}</h2>
-                                    <p className="text-base text-foreground/80">{product.description}</p>
-                                    
-                                    <div className="space-y-6 pt-4">
-                                        <div>
-                                            <h3 className="font-bold text-lg mb-3 font-headline">Keuntungan</h3>
-                                            <ul className="space-y-2 text-foreground/80">
-                                                {product.benefits.map((benefit, i) => (
-                                                    <ListItem key={i}>{benefit}</ListItem>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        {product.requirements.length > 0 && (
-                                          <div>
-                                              <h3 className="font-bold text-lg mb-3 font-headline">Persyaratan</h3>
-                                              <ul className="space-y-2 text-foreground/80">
-                                                  {product.requirements.map((req, i) => (
-                                                      <ListItem key={i}>{req}</ListItem>
-                                                  ))}
-                                              </ul>
-                                          </div>
-                                        )}
-                                    </div>
-                                </div>
-                                
-                                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-                                    <Image
-                                        src={product.image}
-                                        alt={`Ilustrasi ${product.title}`}
-                                        fill
-                                        className="object-cover"
-                                        data-ai-hint={product.dataAiHint}
-                                    />
-                                </div>
-                            </div>
-                            {index < depositProducts.length - 1 && <Separator className="mt-16" />}
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
-        </div>
+        <section
+          className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] bg-background text-foreground overflow-hidden">
+          <div className="absolute inset-0">
+             <Image
+              src="https://picsum.photos/seed/deposit-banner/1920/1080"
+              alt="Layanan deposito di kantor Binarta Luhur"
+              fill
+              className="object-cover object-center"
+              priority
+              data-ai-hint="secure investment meeting" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-black/60 z-20" />
+          </div>
+          
+          <div
+            className="relative container mx-auto px-4 md:px-6 h-full flex flex-col items-center text-center justify-center z-30 text-white">
+            <div className="max-w-2xl space-y-4">
+              <h1 className="text-4xl md:text-6xl font-bold font-headline">
+                Deposito
+              </h1>
+              <p className="text-base md:text-lg text-white/90">
+                Maksimalkan potensi dana Anda dengan solusi deposito yang aman, menguntungkan, dan terpercaya.
+              </p>
+            </div>
+            <a href="#produk-deposito"
+              className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+              <div
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 text-white animate-bounce">
+                <ChevronDown className="w-6 h-6" />
+              </div>
+            </a>
+          </div>
+        </section>
+        
+        <section id="produk-deposito" className="container mx-auto px-4 md:px-6 py-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {isLoading ? (
+                  Array.from({length: 2}).map((_, index) => (
+                    <Card key={index} className="aspect-[4/5] overflow-hidden rounded-lg">
+                      <Skeleton className="w-full h-full" />
+                    </Card>
+                  ))
+                ) : (
+                  products.map((product) => (
+                      <Link href={product.link} key={product.id}>
+                          <Card className="group relative shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden rounded-lg aspect-[4/5]">
+                              <Image
+                                  src={product.image}
+                                  alt={`Ilustrasi ${product.name}`}
+                                  fill
+                                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                  data-ai-hint={product.dataAiHint}
+                                  unoptimized
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                  <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">{product.name}</CardTitle>
+                                  <p className="mt-2 text-white/90 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{product.description}</p>
+                              </div>
+                          </Card>
+                      </Link>
+                  ))
+                )}
+                 {!isLoading && products.length === 0 && (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-muted-foreground">Belum ada produk deposito yang tersedia.</p>
+                  </div>
+                )}
+            </div>
+        </section>
+
       </main>
       <Footer />
     </div>
