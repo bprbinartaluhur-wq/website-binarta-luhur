@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 interface Product {
   id: string;
@@ -83,8 +84,15 @@ export default function SavingProductDetailPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28 pb-20">
-        <div className="container mx-auto px-4 md:px-6">
+      <main className="flex-grow pt-28">
+        <Breadcrumb 
+            items={[
+                {label: 'Produk', href: '/produk'}, 
+                {label: 'Tabungan', href: '/produk/tabungan'},
+                {label: product?.name || '...'}
+            ]} 
+        />
+        <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
           <Card className="max-w-5xl mx-auto shadow-lg border-none overflow-hidden">
             {isLoading ? (
               <>

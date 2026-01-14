@@ -26,6 +26,7 @@ import { collection, getDocs, query, orderBy, Timestamp, where } from "firebase/
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 interface Publication {
   id: string;
@@ -146,8 +147,9 @@ export default function PublikasiPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28 pb-20">
-        <div className="container mx-auto px-4 md:px-6">
+      <main className="flex-grow pt-28">
+        <Breadcrumb items={[{label: 'Publikasi'}]} />
+        <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Publikasi</h1>
                 <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">

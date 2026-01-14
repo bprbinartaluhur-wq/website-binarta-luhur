@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 const depositProducts = [
   {
@@ -58,8 +59,9 @@ export default function DepositoPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-28 pb-20">
-        <div className="container mx-auto px-4 md:px-6">
+      <main className="flex-grow pt-28">
+        <Breadcrumb items={[{label: 'Produk', href: '/produk'}, {label: 'Deposito'}]} />
+        <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <Card className="max-w-5xl mx-auto shadow-lg border-none overflow-hidden">
                 <div className="relative w-full h-48">
                     <Image

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { firestore } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 interface SavingProduct {
   id: string;
@@ -42,14 +43,13 @@ export default function TabunganPage() {
             name: data.name,
             description: data.description,
             image: data.image,
-            link: `/produk/tabungan/${doc.id}`, // Placeholder link
+            link: `/produk/tabungan/${doc.id}`,
             dataAiHint: 'savings product',
           } as SavingProduct;
         });
         setSavingProducts(products);
       } catch (error) {
         console.error("Error fetching saving products:", error);
-        // Optionally set some default/error state
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +61,8 @@ export default function TabunganPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pb-20">
+      <main className="flex-grow pt-28">
+        <Breadcrumb items={[{label: 'Produk', href: '/produk'}, {label: 'Tabungan'}]} />
         <section
           className="relative w-full h-[50vh] min-h-[300px] md:h-[60vh] max-h-[600px] bg-background text-foreground overflow-hidden">
           <div className="absolute inset-0">
@@ -98,7 +99,7 @@ export default function TabunganPage() {
         </section>
         
         <section id="produk-tabungan" className="container mx-auto px-4 md:px-6 py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {isLoading ? (
                   Array.from({length: 3}).map((_, index) => (
                     <Card key={index} className="aspect-[4/5] overflow-hidden rounded-lg">
