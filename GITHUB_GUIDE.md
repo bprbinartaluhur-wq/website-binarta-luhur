@@ -18,7 +18,6 @@ Jika proyek Anda belum menjadi repositori Git, Anda perlu menginisialisasinya te
     git init -b main
     ```
     Perintah ini membuat repositori Git baru di dalam proyek Anda dengan branch utama bernama `main`.
-
 ---
 
 ### Langkah 2: Buat File `.gitignore`
