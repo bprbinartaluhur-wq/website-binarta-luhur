@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useState, useEffect, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -49,10 +50,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { firestore } from "@/lib/firebase";
+import { storage, firestore } from "@/lib/firebase";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { doc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp, Timestamp } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import { format } from 'date-fns';
 
 interface Vacancy {
@@ -62,6 +66,7 @@ interface Vacancy {
   type: "Penuh Waktu" | "Paruh Waktu" | "Magang";
   description: string;
   status: "Dibuka" | "Ditutup";
+  flyer: string;
   createdAt: Timestamp;
 }
 
@@ -73,6 +78,7 @@ const newItemTemplate: EditableVacancy = {
     type: "Penuh Waktu",
     description: "",
     status: "Dibuka",
+    flyer: "https://placehold.co/600x800.png",
 };
 
 export default function VacanciesAdmin() {
@@ -82,9 +88,11 @@ export default function VacanciesAdmin() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('edit');
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedItem, setSelectedItem] = useState<Vacancy | null>(null);
   const [itemToDelete, setItemToDelete] = useState<Vacancy | null>(null);
   const [editedItem, setEditedItem] = useState<EditableVacancy | null>(null);
+  const [flyerFile, setFlyerFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -112,6 +120,8 @@ export default function VacanciesAdmin() {
     setDialogMode('edit');
     setSelectedItem(item);
     setEditedItem({ ...item });
+    setFlyerFile(null);
+    setUploadProgress(0);
     setIsDialogOpen(true);
   };
   
@@ -119,6 +129,8 @@ export default function VacanciesAdmin() {
     setDialogMode('add');
     setSelectedItem(null);
     setEditedItem(newItemTemplate);
+    setFlyerFile(null);
+    setUploadProgress(0);
     setIsDialogOpen(true);
   };
 
@@ -133,16 +145,67 @@ export default function VacanciesAdmin() {
         });
         return;
     }
+    
+    if (dialogMode === 'add' && !flyerFile) {
+        toast({
+            variant: "destructive",
+            title: "Gambar Flayer Diperlukan!",
+            description: "Silakan pilih file gambar untuk diunggah.",
+        });
+        return;
+    }
 
     setIsSaving(true);
+    setUploadProgress(0);
+    let flyerUrl = editedItem.flyer;
 
     try {
-        const dataToSave: Omit<Vacancy, 'id' | 'createdAt'> & { createdAt?: any } = { ...editedItem };
+        if (flyerFile) {
+            if (dialogMode === 'edit' && selectedItem?.flyer) {
+                const isFirebaseStorageUrl = selectedItem.flyer.includes('firebasestorage.googleapis.com');
+                if (isFirebaseStorageUrl) {
+                    try {
+                        const oldImageRef = ref(storage, selectedItem.flyer);
+                        await deleteObject(oldImageRef);
+                    } catch (deleteError: any) {
+                        if (deleteError.code !== 'storage/object-not-found') {
+                           throw deleteError;
+                        }
+                        console.warn("Old flyer not found in Storage, skipping deletion:", selectedItem.flyer);
+                    }
+                }
+            }
+
+            const flyerRef = ref(storage, `vacancy-flyers/${uuidv4()}-${flyerFile.name}`);
+            const uploadTask = uploadBytesResumable(flyerRef, flyerFile);
+
+            flyerUrl = await new Promise<string>((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadProgress(progress);
+                    },
+                    (error) => {
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve(downloadURL);
+                    }
+                );
+            });
+        }
+        
+        const dataToSave: Omit<Vacancy, 'id' | 'createdAt'> & { createdAt?: any } = { 
+            ...editedItem,
+            flyer: flyerUrl,
+        };
 
         if (dialogMode === 'edit' && selectedItem) {
             const itemDocRef = doc(firestore, "vacancies", selectedItem.id);
             await updateDoc(itemDocRef, dataToSave);
-            setVacancies(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave, id: selectedItem.id } : item));
+            setVacancies(items => items.map(item => item.id === selectedItem.id ? { ...item, ...dataToSave, id: selectedItem.id } as Vacancy : item));
             toast({
                 title: "Sukses!",
                 description: "Lowongan berhasil diperbarui.",
@@ -170,12 +233,29 @@ export default function VacanciesAdmin() {
         setIsDialogOpen(false);
         setSelectedItem(null);
         setEditedItem(null);
+        setFlyerFile(null);
+        setUploadProgress(0);
     }
   };
 
   const handleFieldChange = (field: keyof EditableVacancy, value: string) => {
     if (editedItem) {
       setEditedItem({ ...editedItem, [field]: value });
+    }
+  };
+
+  const handleFlyerUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && editedItem) {
+      setFlyerFile(file);
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const result = loadEvent.target?.result;
+        if (typeof result === 'string') {
+          setEditedItem({ ...editedItem, flyer: result });
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -190,6 +270,18 @@ export default function VacanciesAdmin() {
     try {
         const itemDocRef = doc(firestore, "vacancies", itemToDelete.id);
         await deleteDoc(itemDocRef);
+
+        if (itemToDelete.flyer && itemToDelete.flyer.includes('firebasestorage.googleapis.com')) {
+            try {
+                const flyerRef = ref(storage, itemToDelete.flyer);
+                await deleteObject(flyerRef);
+            } catch (deleteError: any) {
+                if (deleteError.code !== 'storage/object-not-found') {
+                   throw deleteError;
+                }
+                console.warn("Flyer to delete not found in Storage:", itemToDelete.flyer);
+            }
+        }
 
         setVacancies(items => items.filter(item => item.id !== itemToDelete.id));
         toast({
@@ -298,7 +390,7 @@ export default function VacanciesAdmin() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[480px]">
+        <DialogContent className="sm:max-w-[480px] grid-rows-[auto_minmax(0,1fr)_auto] max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>{dialogMode === 'edit' ? 'Ubah Lowongan' : 'Tambah Lowongan'}</DialogTitle>
             <DialogDescription>
@@ -308,7 +400,7 @@ export default function VacanciesAdmin() {
             </DialogDescription>
           </DialogHeader>
           {editedItem && (
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 overflow-y-auto pr-6">
               <div className="space-y-2">
                 <Label htmlFor="title">Judul Posisi</Label>
                 <Input id="title" value={editedItem.title} onChange={(e) => handleFieldChange('title', e.target.value)} disabled={isSaving} />
@@ -347,6 +439,22 @@ export default function VacanciesAdmin() {
               <div className="space-y-2">
                 <Label htmlFor="description">Deskripsi</Label>
                 <Textarea id="description" value={editedItem.description} onChange={(e) => handleFieldChange('description', e.target.value)} disabled={isSaving} rows={5} />
+              </div>
+              <div className="space-y-2">
+                <Label>Pratinjau Flayer</Label>
+                <Image
+                    src={editedItem.flyer}
+                    alt="Pratinjau Flayer"
+                    width={600}
+                    height={800}
+                    className="rounded-md object-contain aspect-[3/4] border w-full bg-muted/20"
+                    unoptimized
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="flyer-upload">Unggah Flayer Baru</Label>
+                <Input id="flyer-upload" type="file" accept="image/*" onChange={handleFlyerUpload} disabled={isSaving} />
+                {isSaving && uploadProgress > 0 && <Progress value={uploadProgress} className="w-full mt-2" />}
               </div>
             </div>
           )}
