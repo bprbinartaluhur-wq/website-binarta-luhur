@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator';
 const topNavItems = [
     { name: 'Tentang Binarta Luhur', href: '/tentang-kami' },
     { name: 'Suku Bunga', href: '#' },
-    { name: 'Karir', href: '#' },
+    { name: 'Karir', href: '/karir' },
     { name: 'Partner Kami', href: '#' },
     { name: 'Lokasi Kantor', href: '/#kontak' },
 ];
