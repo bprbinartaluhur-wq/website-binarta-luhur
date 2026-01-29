@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Newspaper, Award, Package, GalleryHorizontal, FileText } from 'lucide-react';
+import { Users, Newspaper, Award, Package, GalleryHorizontal, FileText, Briefcase } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 
@@ -25,17 +25,19 @@ export default function Dashboard() {
     news: 3, // Static for now
     publications: 0,
     team: 0,
+    vacancies: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchCounts() {
       setIsLoading(true);
-      const [carouselCount, productCount, publicationCount, teamCount] = await Promise.all([
+      const [carouselCount, productCount, publicationCount, teamCount, vacanciesCount] = await Promise.all([
         getCollectionCount('carousel'),
         getCollectionCount('products'),
         getCollectionCount('publications'),
         getCollectionCount('team'),
+        getCollectionCount('vacancies'),
       ]);
       setCounts(prev => ({
         ...prev,
@@ -43,6 +45,7 @@ export default function Dashboard() {
         products: productCount,
         publications: publicationCount,
         team: teamCount,
+        vacancies: vacanciesCount,
       }));
       setIsLoading(false);
     }
@@ -129,6 +132,18 @@ export default function Dashboard() {
                     <div className="text-2xl font-bold">{isLoading ? '...' : counts.team}</div>
                     <p className="text-xs text-muted-foreground">
                         Total anggota tim profesional
+                    </p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Lowongan Kerja</CardTitle>
+                    <Briefcase className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{isLoading ? '...' : counts.vacancies}</div>
+                    <p className="text-xs text-muted-foreground">
+                        Posisi pekerjaan yang dibuka
                     </p>
                 </CardContent>
             </Card>
