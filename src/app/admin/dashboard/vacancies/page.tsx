@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, PlusCircle, Loader2, Briefcase, Trash2 } from "lucide-react"
+import { MoreHorizontal, PlusCircle, Loader2, Briefcase, Trash2, Calendar as CalendarIcon } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +50,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { storage, firestore } from "@/lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { doc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp, Timestamp } from "firebase/firestore";
@@ -58,6 +60,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { format } from 'date-fns';
+import { id as indonesianLocale } from 'date-fns/locale';
+import { cn } from "@/lib/utils";
 
 interface Vacancy {
   id: string;
@@ -68,9 +72,12 @@ interface Vacancy {
   status: "Dibuka" | "Ditutup";
   flyer: string;
   createdAt: Timestamp;
+  validUntil: Timestamp;
 }
 
-type EditableVacancy = Omit<Vacancy, 'id' | 'createdAt'>;
+type EditableVacancy = Omit<Vacancy, 'id' | 'createdAt' | 'validUntil'> & {
+  validUntil: Date | null;
+};
 
 const newItemTemplate: EditableVacancy = {
     title: "",
@@ -79,6 +86,7 @@ const newItemTemplate: EditableVacancy = {
     description: "",
     status: "Dibuka",
     flyer: "https://placehold.co/600x800.png",
+    validUntil: null,
 };
 
 export default function VacanciesAdmin() {
@@ -119,7 +127,7 @@ export default function VacanciesAdmin() {
   const handleEditClick = (item: Vacancy) => {
     setDialogMode('edit');
     setSelectedItem(item);
-    setEditedItem({ ...item });
+    setEditedItem({ ...item, validUntil: item.validUntil.toDate() });
     setFlyerFile(null);
     setUploadProgress(0);
     setIsDialogOpen(true);
@@ -128,7 +136,9 @@ export default function VacanciesAdmin() {
   const handleAddClick = () => {
     setDialogMode('add');
     setSelectedItem(null);
-    setEditedItem(newItemTemplate);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setEditedItem({...newItemTemplate, validUntil: tomorrow});
     setFlyerFile(null);
     setUploadProgress(0);
     setIsDialogOpen(true);
@@ -137,11 +147,11 @@ export default function VacanciesAdmin() {
   const handleSaveChanges = async () => {
     if (!editedItem) return;
 
-    if (!editedItem.title || !editedItem.location || !editedItem.description) {
+    if (!editedItem.title || !editedItem.location || !editedItem.description || !editedItem.validUntil) {
         toast({
             variant: "destructive",
             title: "Data Tidak Lengkap!",
-            description: "Judul, lokasi, dan deskripsi harus diisi.",
+            description: "Judul, lokasi, deskripsi, dan masa berlaku harus diisi.",
         });
         return;
     }
@@ -200,6 +210,7 @@ export default function VacanciesAdmin() {
         const dataToSave: Omit<Vacancy, 'id' | 'createdAt'> & { createdAt?: any } = { 
             ...editedItem,
             flyer: flyerUrl,
+            validUntil: Timestamp.fromDate(editedItem.validUntil),
         };
 
         if (dialogMode === 'edit' && selectedItem) {
@@ -238,7 +249,7 @@ export default function VacanciesAdmin() {
     }
   };
 
-  const handleFieldChange = (field: keyof EditableVacancy, value: string) => {
+  const handleFieldChange = (field: keyof EditableVacancy, value: string | Date | null) => {
     if (editedItem) {
       setEditedItem({ ...editedItem, [field]: value });
     }
@@ -325,7 +336,7 @@ export default function VacanciesAdmin() {
               <TableHead>Lokasi</TableHead>
               <TableHead>Tipe</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Tanggal Dibuat</TableHead>
+              <TableHead>Masa Berlaku</TableHead>
               <TableHead>
                 <span className="sr-only">Aksi</span>
               </TableHead>
@@ -354,7 +365,7 @@ export default function VacanciesAdmin() {
                       {item.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>{formatDate(item.createdAt)}</TableCell>
+                  <TableCell>{formatDate(item.validUntil)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -437,6 +448,32 @@ export default function VacanciesAdmin() {
                 </div>
               </div>
               <div className="space-y-2">
+                <Label htmlFor="validUntil">Masa Berlaku</Label>
+                 <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !editedItem.validUntil && "text-muted-foreground"
+                            )}
+                            disabled={isSaving}
+                        >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {editedItem.validUntil ? format(editedItem.validUntil, "PPP", { locale: indonesianLocale }) : <span>Pilih tanggal</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                        <Calendar
+                            mode="single"
+                            selected={editedItem.validUntil ?? undefined}
+                            onSelect={(date) => handleFieldChange('validUntil', date ?? null)}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="description">Deskripsi</Label>
                 <Textarea id="description" value={editedItem.description} onChange={(e) => handleFieldChange('description', e.target.value)} disabled={isSaving} rows={5} />
               </div>
@@ -488,3 +525,5 @@ export default function VacanciesAdmin() {
     </div>
   )
 }
+
+    
