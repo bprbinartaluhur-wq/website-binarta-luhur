@@ -64,7 +64,7 @@ Aplikasi Anda memerlukan kunci konfigurasi Firebase untuk terhubung ke database 
     NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="889537582130"
     ```
 
-3.  **Penting:** Anda perlu memodifikasi kode Anda (`src/lib/firebase.ts`) untuk membaca variabel-variabel ini dari `process.env` daripada menuliskannya secara langsung.
+3.  **Penting:** Anda perlu memodifikasi kode Anda (`src/lib/firebase.ts`) untuk membaca variabel-variabel ini dari process`.env` daripada menuliskannya secara langsung.
 
     **Contoh Modifikasi `src/lib/firebase.ts`:**
     ```typescript
