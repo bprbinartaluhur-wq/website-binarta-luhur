@@ -2,17 +2,16 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+// Menggunakan nilai langsung untuk memastikan aplikasi berjalan di lingkungan pengembangan
 const firebaseConfig = {
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  projectId: "binarta-luhur",
+  appId: "1:889537582130:web:4a8e3304b4d8aad676d82b",
+  storageBucket: "binarta-luhur.firebasestorage.app",
+  apiKey: "AIzaSyBZKSe0UgfUDHZhCwTPcp2c9h-50wazoQs",
+  authDomain: "binarta-luhur.firebaseapp.com",
+  messagingSenderId: "889537582130",
 };
 
 // Initialize Firebase
